@@ -1,77 +1,95 @@
 const dotenv = require('dotenv').config()
 const Discord = require('discord.js')
 const Keyv = require('keyv')
-
-// const redis = require('redis');
-// const db = redis.createClient(process.env.REDISCLOUD_URL, { no_ready_check: true });
+const prefix = "!"
 
 var client = new Discord.Client()
-client.login(process.env.KEY)
+client.login(process.env.BETAKEY)
 
 client.once('ready', () => {
     console.log("Im the Impostor!")
 })
 
 client.on('message', async msg => {
-    // if(msg.member.roles.cache.find(role => role.permissions.has("ADMINISTRATOR"))) {
-    if(!msg.author.bot && msg.content[0] == ".") {
-        if(msg.content == ".amgMute" && (msg.member.roles.cache.find(role => role.permissions.has("ADMINISTRATOR")) || msg.member.roles.cache.find(role => role.name == "Among Us"))) {
-            /**@type {Discord.VoiceChannel} */
-            var voiceChannel = await client.channels.fetch("763085829559681025")
-            if(!isMuted) {
-                voiceChannel.members.forEach(async m => {
-                    await m.voice.setMute(true)
-                    await m.voice.setDeaf(true)
-                })
-            } else {
-                voiceChannel.members.forEach(async m => {
-                    await m.voice.setDeaf(false)
-                    await m.voice.setMute(false)
-                })
+    if(!msg.author.bot && msg.content[0] == "!") {
+        var args = msg.content.slice(1).split(" ")
+
+        if(args[0] == "amgMute") {
+            var keyv = new Keyv(process.env.REDISCLOUD_URL)
+            var db = await keyv.get(msg.guild.id)
+            console.log(db)
+            if(!db) {
+                msg.reply("couldn't find any data related to this server. Try `.register`")
+                return
             }
-            isMuted = !isMuted
-            await msg.delete()
-            return
-        }
+            var roleId = db['muteRoleId']
+            if(!roleId) {
+                msg.reply('no mute role specified. Try `.addMuteRole @role` first')
+                return
 
-        if(msg.content === ".register") {
-            const keyv = new Keyv(process.env.REDISCLOUD_URL)
-            await keyv.set(msg.guild.id, {})
-            console.log(await keyv.get(msg.guild.id))
-            keyv.off('quit', (ev) => {
-                console.log(ev)
-            })
-        }
+            }
 
-        if(msg.content === ".addMuteRole") {
-            var roleId = msg.mentions.roles.first()
-            console.log(roleId)
-            // if(roleId) {
-            //     serverInfo['muteRoleId'] = msg.member.roles.first().id
-            //     console.log(serverInfo)
-            //     await keyv.set(msg.guild.id, serverInfo)
-            // }
-            // const keyv = new Keyv(process.env.REDISCLOUD_URL)
-            // var serverInfo = await keyv.get(msg.guild.id)
-            // console.log(serverInfo)
-            //     if(serverInfo) {
-            //         var roleId = msg.member.roles.first().id
-            //         console.log(roleId)
-            //         if(roleId) {
-            //             serverInfo['muteRoleId'] = msg.member.roles.first().id
-            //             console.log(serverInfo)
-            //             await keyv.set(msg.guild.id, serverInfo)
-            //         }
-            //         else {
-            //             msg.reply("couldn't find this role's ID")
-            //             return
-            //         }
-            //     } else {
-            //         msg.reply('register this server with `.register`')
-            //     }
-            //     return
+            if(msg.member.roles.cache.find(role => role.permissions.has("ADMINISTRATOR")) || msg.member.roles.cache.find(role => role.id == roleId)) {
+                /**@type {Discord.VoiceChannel} */
+                var voiceChannel = await client.channels.fetch("757681696849002567")
+                if(!db.isMuted) {
+                    voiceChannel.members.forEach(async m => {
+                        await m.voice.setMute(true)
+                        await m.voice.setDeaf(true)
+                    })
+                } else {
+                    voiceChannel.members.forEach(async m => {
+                        await m.voice.setDeaf(false)
+                        await m.voice.setMute(false)
+                    })
+                }
+                db.isMuted = !db.isMuted
+                await keyv.set(msg.guild.id, db)
+                await msg.delete()
+                return
+            }
         }
+        if(msg.member.roles.cache.find(role => role.permissions.has("ADMINISTRATOR"))) {
+            console.log('entering admin territory')
+            if(args[0] === "register") {
+                const keyv = new Keyv(process.env.REDISCLOUD_URL)
+                await keyv.set(msg.guild.id, { "isMuted": false })
+                msg.reply('registered server successfuly!')
+                keyv.off('quit', (ev) => {
+                    console.log(ev)
+                })
 
+            }
+
+            if(args[0] === "addMuteRole") {
+                if(!msg.mentions.roles.first()) {
+                    msg.reply('no role specified')
+                    return
+                }
+                var roleId = msg.mentions.roles.first().id
+                const keyv = new Keyv(process.env.REDISCLOUD_URL)
+                var serverInfo = await keyv.get(msg.guild.id)
+                console.log(serverInfo)
+                if(serverInfo) {
+                    serverInfo['muteRoleId'] = roleId
+                    console.log(serverInfo)
+                    await keyv.set(msg.guild.id, serverInfo)
+                    msg.reply('mute role added successfuly!')
+                } else {
+                    msg.reply("couldn't get any info about this server. Please try `.register`")
+                }
+            }
+
+            if(args[0] === "addAmongUsChannel") {
+                if(!args[1]) {
+                    msg.reply("no voicechannel id specified")
+                    return
+                }
+                console.log(typeof args[1])
+            }
+        } else {
+            msg.reply("only server administrators have access to that command")
+        }
         if(msg.content == ".checkdb") {
             const keyv = new Keyv(process.env.REDISCLOUD_URL)
             keyv.on('error', err => {
@@ -82,5 +100,11 @@ client.on('message', async msg => {
             console.log(data)
         }
     }
-    // }
+
+    if(msg.content == ".wipedb" && msg.author.id == "315339158912761856") {
+        console.log("wiping db...")
+        const keyv = new Keyv(process.env.REDISCLOUD_URL)
+        await keyv.clear()
+        console.log(await keyv.get(msg.guild.id))
+    }
 })
