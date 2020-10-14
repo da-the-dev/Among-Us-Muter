@@ -1,14 +1,12 @@
 const dotenv = require('dotenv').config()
 const Discord = require('discord.js')
-const pg = require('pg')
-const db = new pg.Client()
+const Keyv = require('keyv')
+
+// const redis = require('redis');
+// const db = redis.createClient(process.env.REDISCLOUD_URL, { no_ready_check: true });
 
 var client = new Discord.Client()
 client.login(process.env.KEY)
-
-var isMuted = false
-var channelId = "757681696849002567"
-var adminRole = "722067589332729909"
 
 client.once('ready', () => {
     console.log("Im the Impostor!")
@@ -32,16 +30,22 @@ client.on('message', async msg => {
             }
             isMuted = !isMuted
             await msg.delete()
+            return
         }
+
+        if(msg.content === "getRolesInfo") {
+            msg.member.roles.cache
+            return
+        }
+
         if(msg.content == ".checkdb") {
-            db.connect(process.env.DATABASE_URL, (err, client, done) => {
-                db.query("CREATE TABLE IF NOT EXISTS tasks(task_id INT AUTO_INCREMENT PRIMARY KEY)")
-                db.query('SELECT * FROM tasks', (err, result) => {
-                    done();
-                    if(err) return console.error(err);
-                    console.log(result.rows)
-                })
+            const keyv = new Keyv(process.env.REDISCLOUD_URL)
+            keyv.on('error', err => {
+                console.log(err)
             })
+            await keyv.set("1", "2")
+            var data = await keyv.get("1")
+            console.log(data)
         }
     }
 })
