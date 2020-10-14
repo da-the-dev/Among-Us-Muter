@@ -13,10 +13,11 @@ client.once('ready', () => {
 })
 
 client.on('message', async msg => {
+    // if(msg.member.roles.cache.find(role => role.permissions.has("ADMINISTRATOR"))) {
     if(!msg.author.bot && msg.content[0] == ".") {
-        if(msg.content == ".amgMute" && msg.member.roles.cache.has(adminRole)) {
+        if(msg.content == ".amgMute" && (msg.member.roles.cache.find(role => role.permissions.has("ADMINISTRATOR")) || msg.member.roles.cache.find(role => role.name == "Among Us"))) {
             /**@type {Discord.VoiceChannel} */
-            var voiceChannel = await client.channels.fetch(channelId)
+            var voiceChannel = await client.channels.fetch("763085829559681025")
             if(!isMuted) {
                 voiceChannel.members.forEach(async m => {
                     await m.voice.setMute(true)
@@ -33,9 +34,42 @@ client.on('message', async msg => {
             return
         }
 
-        if(msg.content === "getRolesInfo") {
-            msg.member.roles.cache
-            return
+        if(msg.content === ".register") {
+            const keyv = new Keyv(process.env.REDISCLOUD_URL)
+            await keyv.set(msg.guild.id, {})
+            console.log(await keyv.get(msg.guild.id))
+            keyv.off('quit', (ev) => {
+                console.log(ev)
+            })
+        }
+
+        if(msg.content === ".addMuteRole") {
+            var roleId = msg.mentions.roles.first()
+            console.log(roleId)
+            // if(roleId) {
+            //     serverInfo['muteRoleId'] = msg.member.roles.first().id
+            //     console.log(serverInfo)
+            //     await keyv.set(msg.guild.id, serverInfo)
+            // }
+            // const keyv = new Keyv(process.env.REDISCLOUD_URL)
+            // var serverInfo = await keyv.get(msg.guild.id)
+            // console.log(serverInfo)
+            //     if(serverInfo) {
+            //         var roleId = msg.member.roles.first().id
+            //         console.log(roleId)
+            //         if(roleId) {
+            //             serverInfo['muteRoleId'] = msg.member.roles.first().id
+            //             console.log(serverInfo)
+            //             await keyv.set(msg.guild.id, serverInfo)
+            //         }
+            //         else {
+            //             msg.reply("couldn't find this role's ID")
+            //             return
+            //         }
+            //     } else {
+            //         msg.reply('register this server with `.register`')
+            //     }
+            //     return
         }
 
         if(msg.content == ".checkdb") {
@@ -48,4 +82,5 @@ client.on('message', async msg => {
             console.log(data)
         }
     }
+    // }
 })
