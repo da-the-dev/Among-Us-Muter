@@ -4,7 +4,7 @@ const Keyv = require('keyv')
 const prefix = "!"
 
 var client = new Discord.Client()
-client.login(process.env.BETAKEY)
+client.login(process.env.KEY)
 
 client.once('ready', () => {
     console.log("Im the Impostor!")
