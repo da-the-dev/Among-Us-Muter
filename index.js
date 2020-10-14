@@ -17,7 +17,7 @@ client.on('message', async msg => {
         if(args[0] == "amgMute") {
             var keyv = new Keyv(process.env.REDISCLOUD_URL)
             var db = await keyv.get(msg.guild.id)
-            console.log(db)
+
             if(!db) {
                 msg.reply("couldn't find any data related to this server. Try `.register`")
                 return
@@ -43,7 +43,7 @@ client.on('message', async msg => {
                     })
                     msg.reply('channel muted! SHHHHHHHHH!')
                         .then(msg => {
-                            msg.delete({ timeout: 1000 })
+                            msg.delete({ timeout: 3000 })
                         })
                 } else {
                     voiceChannel.members.forEach(async m => {
@@ -52,7 +52,7 @@ client.on('message', async msg => {
                     })
                     msg.reply('channel un-muted! Speak!')
                         .then(msg => {
-                            msg.delete({ timeout: 1000 })
+                            msg.delete({ timeout: 3000 })
                         })
 
                 }
