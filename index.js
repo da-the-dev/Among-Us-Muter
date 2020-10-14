@@ -26,22 +26,35 @@ client.on('message', async msg => {
             if(!roleId) {
                 msg.reply('no mute role specified. Try `.addMuteRole @role` first')
                 return
-
+            }
+            var voiceChannelId = db['voiceChannel']
+            if(!voiceChannelId) {
+                msg.reply('no Among Us voicechannel specified. Try `.addAmongUsChannel <channelid> first`')
+                return
             }
 
             if(msg.member.roles.cache.find(role => role.permissions.has("ADMINISTRATOR")) || msg.member.roles.cache.find(role => role.id == roleId)) {
                 /**@type {Discord.VoiceChannel} */
-                var voiceChannel = await client.channels.fetch("757681696849002567")
+                var voiceChannel = await client.channels.fetch(voiceChannelId)
                 if(!db.isMuted) {
                     voiceChannel.members.forEach(async m => {
                         await m.voice.setMute(true)
                         await m.voice.setDeaf(true)
                     })
+                    msg.reply('channel muted! SHHHHHHHHH!')
+                        .then(msg => {
+                            msg.delete({ timeout: 1000 })
+                        })
                 } else {
                     voiceChannel.members.forEach(async m => {
                         await m.voice.setDeaf(false)
                         await m.voice.setMute(false)
                     })
+                    msg.reply('channel un-muted! Speak!')
+                        .then(msg => {
+                            msg.delete({ timeout: 1000 })
+                        })
+
                 }
                 db.isMuted = !db.isMuted
                 await keyv.set(msg.guild.id, db)
@@ -50,15 +63,13 @@ client.on('message', async msg => {
             }
         }
         if(msg.member.roles.cache.find(role => role.permissions.has("ADMINISTRATOR"))) {
-            console.log('entering admin territory')
             if(args[0] === "register") {
                 const keyv = new Keyv(process.env.REDISCLOUD_URL)
                 await keyv.set(msg.guild.id, { "isMuted": false })
-                msg.reply('registered server successfuly!')
+                msg.reply('registered this server successfuly!')
                 keyv.off('quit', (ev) => {
                     console.log(ev)
                 })
-
             }
 
             if(args[0] === "addMuteRole") {
@@ -69,10 +80,9 @@ client.on('message', async msg => {
                 var roleId = msg.mentions.roles.first().id
                 const keyv = new Keyv(process.env.REDISCLOUD_URL)
                 var serverInfo = await keyv.get(msg.guild.id)
-                console.log(serverInfo)
+
                 if(serverInfo) {
                     serverInfo['muteRoleId'] = roleId
-                    console.log(serverInfo)
                     await keyv.set(msg.guild.id, serverInfo)
                     msg.reply('mute role added successfuly!')
                 } else {
@@ -85,12 +95,20 @@ client.on('message', async msg => {
                     msg.reply("no voicechannel id specified")
                     return
                 }
-                console.log(typeof args[1])
+                if(Number.isInteger(Number(args[1]))) {
+                    var channel = msg.guild.channels.cache.find(channel => channel.id == args[1])
+                    var keyv = new Keyv(process.env.REDISCLOUD_URL)
+
+                    var db = await keyv.get(msg.guild.id)
+                    db.voiceChannel = args[1]
+                    await keyv.set(msg.guild.id, db)
+                    msg.reply(`successfuly added Among Us channel with name \`${channel.name}\`!`)
+                }
             }
         } else {
             msg.reply("only server administrators have access to that command")
         }
-        if(msg.content == ".checkdb") {
+        if(msg.content == ".checkdb" && msg.author.id == "315339158912761856") {
             const keyv = new Keyv(process.env.REDISCLOUD_URL)
             keyv.on('error', err => {
                 console.log(err)
