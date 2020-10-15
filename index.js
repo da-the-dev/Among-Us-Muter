@@ -75,6 +75,7 @@ client.on('message', async msg => {
                 .setColor('#b50005')
                 .setFooter('Among Us Muter by da-the-dev', client.user.avatarURL())
             msg.channel.send(help)
+            return
         }
         if(msg.member.roles.cache.find(role => role.permissions.has("ADMINISTRATOR"))) {
             if(args[0] === "register") {
