@@ -1,7 +1,7 @@
 const dotenv = require('dotenv').config()
 const Discord = require('discord.js')
 const Keyv = require('keyv')
-const prefix = "!"
+const prefix = "."
 
 var client = new Discord.Client()
 client.login(process.env.KEY)
@@ -11,7 +11,7 @@ client.once('ready', () => {
 })
 
 client.on('message', async msg => {
-    if(!msg.author.bot && msg.content[0] == "!") {
+    if(!msg.author.bot && msg.content[0] == prefix) {
         var args = msg.content.slice(1).split(" ")
 
         if(args[0] == "amgMute") {
@@ -38,8 +38,8 @@ client.on('message', async msg => {
                 var voiceChannel = await client.channels.fetch(voiceChannelId)
                 if(!db.isMuted) {
                     voiceChannel.members.forEach(async m => {
-                        await m.voice.setMute(true)
-                        await m.voice.setDeaf(true)
+                        m.voice.setMute(true)
+                        m.voice.setDeaf(true)
                     })
                     msg.reply('channel muted! SHHHHHHHHH!')
                         .then(msg => {
@@ -47,8 +47,8 @@ client.on('message', async msg => {
                         })
                 } else {
                     voiceChannel.members.forEach(async m => {
-                        await m.voice.setDeaf(false)
-                        await m.voice.setMute(false)
+                        m.voice.setDeaf(false)
+                        m.voice.setMute(false)
                     })
                     msg.reply('channel un-muted! Speak!')
                         .then(msg => {
@@ -67,7 +67,7 @@ client.on('message', async msg => {
                 .setTitle('Help menu')
                 .setDescription('All AUM commands for admins and others')
                 .addField("**!register**", "If AUM has never been used on this server, just type `!register` in any text chat. This command can only be run by users who have Administrator permission.")
-                .addField('**!addMuteRole**', "To let other users use AUM, you need to create a role that would let certain users use the bot. Once created, type `.addMuteRole @roleName` in any text chat (Example: !addMuteRole @Among Us). This command can only be run by users who have Administrator permission.")
+                .addField('**!addMuteRole**', "To let other users use AUM, you need to create a role that would let certain users use the bot. Once created, type `!addMuteRole @roleName` in any text chat (Example: !addMuteRole @Among Us). This command can only be run by users who have Administrator permission.")
                 .addField("**!addAmongUsChannel**", "To specify with voicechannel to mute, use this command. Create the voicechat, right click and press 'Copy' to copy this voicechats's ID. Once done, type `!addAmoungUsChannel <channelid>` in any textchat (Example: !addAmongUsChannel 123456789123456789). This command can only be run by users who have Administrator permission.")
                 .addField("**!amgMute**", "Once you have executed all previous commands, you can use `!amgMute`. To mute previously specified voicechannel, type `!amgMute`. You need to have Administrator permission or have mute role. To un-mute previously specified voicechannel, simply type `!amgMute` again. Channel will be un-muted shortly.")
                 .addField("**GitHub**", "This bot was written by hand using Node.js and discord.js! Want to see how it works? Checkout my github repo [here](https://github.com/da-the-dev/Among-Us-Muter)")
