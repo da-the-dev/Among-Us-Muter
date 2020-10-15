@@ -1,7 +1,7 @@
 const dotenv = require('dotenv').config()
 const Discord = require('discord.js')
 const Keyv = require('keyv')
-const prefix = "."
+const prefix = "!"
 
 var client = new Discord.Client()
 client.login(process.env.KEY)
