@@ -101,7 +101,7 @@ client.on('message', async msg => {
                     await keyv.set(msg.guild.id, serverInfo)
                     msg.reply('mute role added successfuly!')
                 } else {
-                    msg.reply("couldn't get any info about this server. Please try `.register`")
+                    msg.reply("couldn't get any info about this server. Please try `!register`")
                 }
             }
 
