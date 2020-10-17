@@ -16,8 +16,8 @@ To let other users use AUM, you need to create a role that would let certain use
 **`!addAmongUsChannel`**      
 To specify with voicechannel to mute, use this command. Create the voicechat, right click and press 'Copy' to copy this voicechats's ID. Once done, type `!addAmoungUsChannel <channelid>` in any textchat (Example: `!addAmongUsChannel 123456789123456789`). This command can only be run by users who have Administrator permission.
 
-**`!amgMute`**   
-Once you have executed all previous commands, you can use `!amgMute`. To mute previously specified voicechannel, type `!amgMute`. You need to have Administrator permission or have mute role. To un-mute previously specified voicechannel, simply type `!amgMute` again. Channel will be un-muted shortly.
+**`!amg`**   
+Once you have executed all previous commands, you can use `!amg`. To mute previously specified voicechannel, type `!amg`. You need to have Administrator permission or have mute role. To un-mute previously specified voicechannel, simply type `!amg` again. Channel will be un-muted shortly.
 
 # Patreon
 Love this bot? Consider [donating a few dollans](https://www.patreon.com/da_dev) to help this project grow!
