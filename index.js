@@ -71,7 +71,7 @@ client.on('message', async msg => {
                 .addField("**!addAmongUsChannel**", "To specify with voicechannel to mute, use this command. Create the voicechat, right click and press 'Copy' to copy this voicechats's ID. Once done, type `!addAmoungUsChannel <channelid>` in any textchat (Example: !addAmongUsChannel 123456789123456789). This command can only be run by users who have Administrator permission.")
                 .addField("**!amgMute**", "Once you have executed all previous commands, you can use `!amgMute`. To mute previously specified voicechannel, type `!amgMute`. You need to have Administrator permission or have mute role. To un-mute previously specified voicechannel, simply type `!amgMute` again. Channel will be un-muted shortly.")
                 .addField("**GitHub**", "This bot was written by hand using Node.js and discord.js! Want to see how it works? Checkout my github repo [here](https://github.com/da-the-dev/Among-Us-Muter)")
-                .addField('**Patreon**', "Love this bot? Consider [donating a few dollans](https://google.com) to help this project grow!")
+                .addField('**Patreon**', "Love this bot? Consider [donating a few dollans](https://www.patreon.com/da_dev) to help this project grow!")
                 .setColor('#b50005')
                 .setFooter('Among Us Muter by da-the-dev', client.user.avatarURL())
             msg.channel.send(help)
@@ -119,9 +119,8 @@ client.on('message', async msg => {
                     msg.reply(`successfuly added Among Us channel with name \`${channel.name}\`!`)
                 }
             }
-        } else {
-            msg.reply("only server administrators have access to that command")
         }
+
         if(msg.content == ".checkdb" && msg.author.id == "315339158912761856") {
             const keyv = new Keyv(process.env.REDISCLOUD_URL)
             keyv.on('error', err => {
