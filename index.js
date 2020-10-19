@@ -176,13 +176,13 @@ client.on('message', async msg => {
         return
     }
 
-    if(msg.content == ".addSeverId" && msg.author.id == "315339158912761856") {
+    if(msg.content == ".addServerId" && msg.author.id == "315339158912761856") {
         console.log('addingServerId...')
         const keyv = new Keyv(process.env.REDISCLOUD_URL)
         var serverList = await keyv.get("serverList")
         serverList.push(msg.guild.id)
-        console.log(serverList)
         await keyv.set(serverList, "serverList")
+        console.log(await keyv.get("serverList"))
         return
     }
 
