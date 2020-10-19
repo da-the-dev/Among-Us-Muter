@@ -7,7 +7,7 @@ var client = new Discord.Client()
 client.login(process.env.KEY)
 
 client.once('ready', () => {
-    console.log("Im the Impostor")
+    console.log("Im the Impostor, but Beta!")
 })
 
 client.on('message', async msg => {
@@ -158,16 +158,6 @@ client.on('message', async msg => {
         const keyv = new Keyv(process.env.REDISCLOUD_URL)
         await keyv.clear()
         console.log(await keyv.get(msg.guild.id))
-        return
-    }
-
-    if(msg.content == ".deleteThisCommand" && msg.author.id == "315339158912761856") {
-        console.log('adding server to list...')
-        const keyv = new Keyv(process.env.REDISCLOUD_URL)
-        var serverList = await keyv.get("serverList")
-        serverList.push(args[1])
-        console.log(serverList)
-        await keyv.set('serverList', serverList)
         return
     }
 
