@@ -181,7 +181,7 @@ client.on('message', async msg => {
         const keyv = new Keyv(process.env.REDISCLOUD_URL)
         var serverList = await keyv.get("serverList")
         serverList.push(msg.guild.id)
-        await keyv.set(serverList, "serverList")
+        await keyv.set("serverList", serverList)
         console.log(await keyv.get("serverList"))
         return
     }
