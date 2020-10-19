@@ -1,13 +1,13 @@
 const dotenv = require('dotenv').config()
 const Discord = require('discord.js')
 const Keyv = require('keyv')
-const prefix = "$"
+const prefix = "."
 
 var client = new Discord.Client()
-client.login(process.env.KEY)
+client.login(process.env.BETAKEY)
 
 client.once('ready', () => {
-    console.log("Im the Impostor!")
+    console.log("Im the Impostor, but Beta!")
 })
 
 client.on('message', async msg => {
@@ -60,6 +60,30 @@ client.on('message', async msg => {
                 return
             }
         }
+
+        if(args[0] == "fix") {
+            var keyv = new Keyv(process.env.REDISCLOUD_URL)
+            var db = await keyv.get(msg.guild.id)
+
+            if(!db) {
+                msg.reply("couldn't find any data related to this server. Try `.register`")
+                return
+            }
+            var roleId = db['muteRoleId']
+            if(!roleId) {
+                msg.reply('no mute role specified. Try `.addMuteRole @role` first')
+                return
+            }
+
+            if(msg.member.roles.cache.find(role => role.permissions.has("ADMINISTRATOR")) || msg.member.roles.cache.find(role => role.id == roleId)) {
+                var mentioned = msg.mentions.members.first()
+                if(mentioned) {
+                    mentioned.voice.setMute(false)
+                    msg.reply(`fixed <@${mentioned.user.id}>. Please, don't break the bot`)
+                }
+            }
+        }
+
         if(args[0] == "help") {
             var help = new Discord.MessageEmbed()
                 .setTitle('Help menu')
@@ -68,6 +92,7 @@ client.on('message', async msg => {
                 .addField(`**${prefix}addMuteRole**`, `To let other users use AUM, you need to create a role that would let certain users use the bot. Once created, type \`${prefix}addMuteRole @roleName\` in any text chat (Example: \`${prefix}addMuteRole @Among Us\`). This command can only be run by users who have Administrator permission.`)
                 .addField(`**${prefix}addAmongUsChannel**`, `To specify which voicechannel to mute, use this command. Create the voicechat, right click and press 'Copy' to copy this voicechats's ID. Once done, type \`${prefix}addAmoungUsChannel <channelid>\` in any textchat (Example: \`${prefix}addAmongUsChannel 123456789123456789)\`. This command can only be run by users who have Administrator permission.`)
                 .addField(`**${prefix}amg**`, `Once you have executed all previous commands, you can use \`${prefix}amg\`. To mute previously specified voicechannel, type \`${prefix}amg\`. You need to have Administrator permission or have mute role. To un-mute previously specified voicechannel, simply type \`${prefix}amg\` again. Channel will be un-muted shortly.`)
+                .addField(`**${prefix}fix**`, `If user left Among Us channel when it was muted, type \`${prefix}fix @member\` in any text chat (Example: \`${prefix}fix @daym bro\`). This will give them back their microphone.`)
                 .addField("**GitHub**", "This bot was written by hand using Node.js and discord.js! Want to see how it works? Checkout my github repo [here](https://github.com/da-the-dev/Among-Us-Muter)")
                 .addField('**Patreon**', "Love this bot? Consider [donating a few dollans](https://www.patreon.com/da_dev) to help this project grow!")
                 .setColor('#b50005')
