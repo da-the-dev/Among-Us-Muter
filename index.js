@@ -10,22 +10,6 @@ client.once('ready', () => {
     console.log("Im the Impostor!")
 })
 
-client.on('voiceStateUpdate', (oldUser, newUser) => {
-    const keyv = new Keyv(process.env.REDISCLOUD_URL)
-    var db = await keyv.get(newUser.guild.id)
-
-    // User left Among Us voicechannel
-    if(oldUser.channelID == oldUser.guild.channels.cache.find(channel => channel.id == db.voiceChannel)) {
-        newUser.setMute(false)
-        return
-    }
-    // User joined Among Us voicechannel
-    if(newUser.guild.channels.cache.find(channel => channel.id == db.voiceChannel) && db.isMuted) {
-        newUser.setMute(true)
-        return
-    }
-})
-
 client.on('message', async msg => {
     if(!msg.author.bot && msg.content[0] == prefix) {
         var args = msg.content.slice(1).split(" ")
