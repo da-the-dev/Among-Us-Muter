@@ -11,25 +11,25 @@ client.once('ready', () => {
 })
 
 client.on('message', async msg => {
-    var args = msg.content.slice(1).split(" ")
     if(!msg.author.bot && msg.content[0] == prefix) {
-        // Mutting Among Us voicechannel
+        var args = msg.content.slice(1).split(" ")
+
         if(args[0] == "amg") {
             var keyv = new Keyv(process.env.REDISCLOUD_URL)
             var db = await keyv.get(msg.guild.id)
 
             if(!db) {
-                msg.reply(`couldn't find any data related to this server. Try \`${prefix}register\``)
+                msg.reply("couldn't find any data related to this server. Try `.register`")
                 return
             }
             var roleId = db['muteRoleId']
             if(!roleId) {
-                msg.reply(`no mute role specified. Try \`${prefix}addMuteRole @role\` first`)
+                msg.reply('no mute role specified. Try `.addMuteRole @role` first')
                 return
             }
             var voiceChannelId = db['voiceChannel']
             if(!voiceChannelId) {
-                msg.reply(`no Among Us voicechannel specified. Try \`${prefix}addAmongUsChannel <channelid> first\``)
+                msg.reply('no Among Us voicechannel specified. Try `.addAmongUsChannel <channelid> first`')
                 return
             }
 
@@ -39,7 +39,6 @@ client.on('message', async msg => {
                 if(!db.isMuted) {
                     voiceChannel.members.forEach(async m => {
                         m.voice.setMute(true)
-                        m.voice.setDeaf(true)
                     })
                     msg.reply('channel muted! SHHHHHHHHH!')
                         .then(msg => {
@@ -48,7 +47,6 @@ client.on('message', async msg => {
                 } else {
                     voiceChannel.members.forEach(async m => {
                         m.voice.setDeaf(false)
-                        m.voice.setMute(false)
                     })
                     msg.reply('channel un-muted! Speak!')
                         .then(msg => {
@@ -62,7 +60,30 @@ client.on('message', async msg => {
                 return
             }
         }
-        // Sending help menu
+
+        if(args[0] == "fix") {
+            var keyv = new Keyv(process.env.REDISCLOUD_URL)
+            var db = await keyv.get(msg.guild.id)
+
+            if(!db) {
+                msg.reply("couldn't find any data related to this server. Try `.register`")
+                return
+            }
+            var roleId = db['muteRoleId']
+            if(!roleId) {
+                msg.reply('no mute role specified. Try `.addMuteRole @role` first')
+                return
+            }
+
+            if(msg.member.roles.cache.find(role => role.permissions.has("ADMINISTRATOR")) || msg.member.roles.cache.find(role => role.id == roleId)) {
+                var mentioned = msg.mentions.members.first()
+                if(mentioned) {
+                    mentioned.voice.setMute(false)
+                    msg.reply(`fixed <@${mentioned.user.id}>. Please, don't break the bot`)
+                }
+            }
+        }
+
         if(args[0] == "help") {
             var help = new Discord.MessageEmbed()
                 .setTitle('Help menu')
@@ -71,6 +92,7 @@ client.on('message', async msg => {
                 .addField(`**${prefix}addMuteRole**`, `To let other users use AUM, you need to create a role that would let certain users use the bot. Once created, type \`${prefix}addMuteRole @roleName\` in any text chat (Example: \`${prefix}addMuteRole @Among Us\`). This command can only be run by users who have Administrator permission.`)
                 .addField(`**${prefix}addAmongUsChannel**`, `To specify which voicechannel to mute, use this command. Create the voicechat, right click and press 'Copy' to copy this voicechats's ID. Once done, type \`${prefix}addAmoungUsChannel <channelid>\` in any textchat (Example: \`${prefix}addAmongUsChannel 123456789123456789)\`. This command can only be run by users who have Administrator permission.`)
                 .addField(`**${prefix}amg**`, `Once you have executed all previous commands, you can use \`${prefix}amg\`. To mute previously specified voicechannel, type \`${prefix}amg\`. You need to have Administrator permission or have mute role. To un-mute previously specified voicechannel, simply type \`${prefix}amg\` again. Channel will be un-muted shortly.`)
+                .addField(`**${prefix}fix**`, `If user left Among Us channel when it was muted, type \`${prefix}fix @member\` in any text chat (Example: \`${prefix}fix @daym bro\`). This will give them back their microphone.`)
                 .addField("**GitHub**", "This bot was written by hand using Node.js and discord.js! Want to see how it works? Checkout my github repo [here](https://github.com/da-the-dev/Among-Us-Muter)")
                 .addField('**Patreon**', "Love this bot? Consider [donating a few dollans](https://www.patreon.com/da_dev) to help this project grow!")
                 .setColor('#b50005')
@@ -78,30 +100,16 @@ client.on('message', async msg => {
             msg.channel.send(help)
             return
         }
-        // Sending ping
-        if(args[0] == "ping") {
-            msg.reply(`my ping is ${client.ws.ping}`)
-        }
         if(msg.member.roles.cache.find(role => role.permissions.has("ADMINISTRATOR"))) {
-            // Registering server
             if(args[0] === "register") {
                 const keyv = new Keyv(process.env.REDISCLOUD_URL)
                 await keyv.set(msg.guild.id, { "isMuted": false })
-
-                /**@type {Array<string>L} */
-                var serverList = await keyv.get('serverList')
-                if(!serverList.includes(msg.guild.id)) {
-                    serverList.push(msg.guild.id)
-                    keyv.set('serverList', serverList)
-                }
                 msg.reply('registered this server successfuly!')
                 keyv.off('quit', (ev) => {
                     console.log(ev)
                 })
-                return
             }
 
-            // Defining Mute Role
             if(args[0] === "addMuteRole") {
                 if(!msg.mentions.roles.first()) {
                     msg.reply('no role specified')
@@ -118,10 +126,8 @@ client.on('message', async msg => {
                 } else {
                     msg.reply(`couldn't get any info about this server. Please try \`${prefix}register\``)
                 }
-                return
             }
 
-            // Defining Among Us voicechannel
             if(args[0] === "addAmongUsChannel") {
                 if(!args[1]) {
                     msg.reply("no voicechannel id specified")
@@ -136,21 +142,18 @@ client.on('message', async msg => {
                     await keyv.set(msg.guild.id, db)
                     msg.reply(`successfuly added Among Us channel with name \`${channel.name}\`!`)
                 }
-                return
             }
         }
-    }
 
-    // Developer commands
-    if(msg.content == ".checkdb" && msg.author.id == "315339158912761856") {
-        const keyv = new Keyv(process.env.REDISCLOUD_URL)
-        keyv.on('error', err => {
-            console.log(err)
-        })
-        await keyv.set("1", "2")
-        var data = await keyv.get("1")
-        console.log(data)
-        return
+        if(msg.content == ".checkdb" && msg.author.id == "315339158912761856") {
+            const keyv = new Keyv(process.env.REDISCLOUD_URL)
+            keyv.on('error', err => {
+                console.log(err)
+            })
+            await keyv.set("1", "2")
+            var data = await keyv.get("1")
+            console.log(data)
+        }
     }
 
     if(msg.content == ".wipedb" && msg.author.id == "315339158912761856") {
@@ -237,7 +240,7 @@ client.on('message', async msg => {
             .addField(`**${prefix}amg**`, `Once you have executed all previous commands, you can use \`${prefix}amg\`. To mute previously specified voicechannel, type \`${prefix}amg\`. You need to have Administrator permission or have mute role. To un-mute previously specified voicechannel, simply type \`${prefix}amg\` again. Channel will be un-muted shortly.`)
             .addField("**GitHub**", "This bot was written by hand using Node.js and discord.js! Want to see how it works? Checkout my github repo [here](https://github.com/da-the-dev/Among-Us-Muter)")
             .addField('**Patreon**', "Love this bot? Consider [donating a few dollans](https://www.patreon.com/da_dev) to help this project grow!")
-            .addField('**Still have troble setting everything up?**', 'Check out [this video](https://www.youtube.com/watch?v=y4IwTTkcpc8) with a setup-by-step visual guide on how to set Among Us Muter on your Discord server')
+            .addField('**Still have troble setting everything up?**', 'Check out [this video](https://www.youtube.com/watch?v=y4IwTTkcpc8) with a setup-by-step visual guide on how to set Among Us Muter on your Discord server or hit me up directly on Discord, it\'s *daym bro#6625*!')
             .setColor('#b50005')
             .setFooter('Among Us Muter by da-the-dev', client.user.avatarURL())
         await msg.author.send(help)
