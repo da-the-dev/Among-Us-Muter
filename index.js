@@ -80,6 +80,8 @@ client.on('message', async msg => {
                 if(mentioned) {
                     mentioned.voice.setMute(false)
                     msg.reply(`fixed <@${mentioned.user.id}>. Please, don't break the bot`)
+                } else {
+                    msg.reply("either no user mentioned, or not a user was specified")
                 }
             }
         }
