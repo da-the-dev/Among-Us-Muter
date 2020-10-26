@@ -46,7 +46,7 @@ client.on('message', async msg => {
                         })
                 } else {
                     voiceChannel.members.forEach(async m => {
-                        m.voice.setDeaf(false)
+                        m.voice.setMute(false)
                     })
                     msg.reply('channel un-muted! Speak!')
                         .then(msg => {
