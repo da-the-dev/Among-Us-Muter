@@ -8,6 +8,7 @@ var client = new Discord.Client()
 
 var commandNames = fs.readdirSync(__dirname + '/commands')
 client.commands = new Array()
+client.prefix = prefix
 commandNames.forEach(c =>
     client.commands.push({
         'name': c.slice(0, c.length - 3),
