@@ -16,7 +16,7 @@ commandNames.forEach(c =>
     })
 )
 
-client.login(process.env.BETAKEY)
+client.login(process.env.KEY)
 client.once('ready', () => {
     console.log("Im the Impostor!")
 })
