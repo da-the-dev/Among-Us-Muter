@@ -2,7 +2,7 @@ const dotenv = require('dotenv').config()
 const Discord = require('discord.js')
 const fs = require('fs')
 const Keyv = require('keyv')
-const prefix = "."
+const prefix = "$"
 
 var client = new Discord.Client()
 
@@ -18,7 +18,7 @@ commandNames.forEach(c =>
 
 client.login(process.env.BETAKEY)
 client.once('ready', () => {
-    console.log("Im the Impostor, but Beta!")
+    console.log("Im the Impostor!")
 })
 
 client.on('message', async msg => {
