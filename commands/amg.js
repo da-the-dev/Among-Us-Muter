@@ -1,5 +1,5 @@
 const Discord = require('discord.js')
-const Keyv = require('keyv')
+const asyncRedis = require('async-redis');
 module.exports =
     /**
      * @param {Array<string>} args Command argument
@@ -7,21 +7,30 @@ module.exports =
      * @param {Discord.Client} client Discord client object
     */
     async (args, msg, client) => {
-        var keyv = new Keyv(process.env.REDISCLOUD_URL)
-        var db = await keyv.get(msg.guild.id)
+        const redis = asyncRedis.createClient(process.env.REDISCLOUD_URL)
+        redis.on('ready', () => {
+            console.log('[DB] Connection established')
+        })
+        redis.on('end', () => {
+            console.log('[DB] Connection closed')
+        })
+        var db = JSON.parse(await redis.get(msg.guild.id))
 
         if(!db) {
             msg.reply("couldn't find any data related to this server. Try `.register`")
+            redis.quit()
             return
         }
         var roleId = db['muteRoleId']
         if(!roleId) {
             msg.reply('no mute role specified. Try `.addMuteRole @role` first')
+            redis.quit()
             return
         }
         var voiceChannelId = db['voiceChannel']
         if(!voiceChannelId) {
             msg.reply('no Among Us voicechannel specified. Try `.addAmongUsChannel <channelid> first`')
+            redis.quit()
             return
         }
 
@@ -34,7 +43,7 @@ module.exports =
                 })
                 msg.reply('channel muted! SHHHHHHHHH!')
                     .then(msg => {
-                        msg.delete({ timeout: 3000 })
+                        msg.delete({ timeout: 5000 })
                     })
             } else {
                 voiceChannel.members.forEach(async m => {
@@ -42,13 +51,14 @@ module.exports =
                 })
                 msg.reply('channel un-muted! Speak!')
                     .then(msg => {
-                        msg.delete({ timeout: 3000 })
+                        msg.delete({ timeout: 5000 })
                     })
 
             }
             db.isMuted = !db.isMuted
-            await keyv.set(msg.guild.id, db)
+            await redis.set(msg.guild.id, JSON.stringify(db))
             await msg.delete()
+            redis.quit()
             return
         }
     }

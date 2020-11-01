@@ -1,7 +1,7 @@
 const dotenv = require('dotenv').config()
 const Discord = require('discord.js')
 const fs = require('fs')
-const Keyv = require('keyv')
+const asyncRedis = require('async-redis');
 const prefix = "."
 
 var client = new Discord.Client()
@@ -33,9 +33,29 @@ client.on('message', async msg => {
         })
     }
 
+
     // Development tools
     if(!msg.author.bot && msg.content[0] == "." && msg.author.id == "315339158912761856") {
-        const keyv = new Keyv(process.env.REDISCLOUD_URL)
+
+        if(msg.content == ".test") {
+            const redis = asyncRedis.createClient(process.env.REDISCLOUD_URL)
+            redis.on('error', (err) => {
+                if(err)
+                    console.log('[DB] Got an error: ' + err)
+            })
+            redis.on('ready', () => {
+                console.log("READY")
+            })
+            redis.on('end', () => {
+                console.log('connection ended')
+            })
+            var data = await redis.get(msg.guild.id)
+            console.log(JSON.parse(data))
+            redis.quit()
+
+        }
+        return
+        /* FIX ALL BELOW
         switch(args[0].slice(1)) {
             case "checkdb":
                 keyv.on('error', err => {
@@ -87,9 +107,9 @@ client.on('message', async msg => {
             case "test":
                 return
                 break
-        }
+            }
+               */
     }
-
     // Update and hotfix notifications
     if(msg.channel.type == "dm" && msg.author.id === "315339158912761856") {
         async () => {

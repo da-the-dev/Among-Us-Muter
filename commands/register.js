@@ -1,4 +1,4 @@
-const Keyv = require('keyv')
+const asyncRedis = require('async-redis');
 module.exports =
     /**
      * @param {Array<string>} args Command argument
@@ -7,11 +7,20 @@ module.exports =
     */
     async (args, msg, client) => {
         if(msg.member.roles.cache.find(role => role.permissions.has("ADMINISTRATOR"))) {
-            const keyv = new Keyv(process.env.REDISCLOUD_URL)
-            await keyv.set(msg.guild.id, { "isMuted": false })
-            msg.reply('registered this server successfuly!')
-            keyv.off('quit', (ev) => {
-                console.log(ev)
+            const redis = asyncRedis.createClient(process.env.REDISCLOUD_URL)
+            redis.on('ready', () => {
+                console.log('[DB] Connection established')
             })
+            redis.on('end', () => {
+                console.log('[DB] Connection closed')
+            })
+
+            await redis.set(msg.guild.id, JSON.stringify({ "isMuted": false }))
+            console.log(JSON.parse(await redis.get(msg.guild.id)))
+            msg.reply('registered this server successfuly!')
+
+            // await redis.get('s')
+
+            redis.quit()
         }
     }
