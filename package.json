@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "@keyv/redis": "^2.1.2",
+    "@types/async-redis": "^1.1.1",
     "async-redis": "^1.1.7",
     "discord.js": "^12.3.1",
     "dotenv": "^8.2.0",

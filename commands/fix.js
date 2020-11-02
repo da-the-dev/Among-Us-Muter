@@ -35,4 +35,5 @@ module.exports =
                 msg.reply("either no user mentioned, or not a user was specified")
             }
         }
+        redis.quit()
     }

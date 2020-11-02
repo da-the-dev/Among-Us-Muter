@@ -1,3 +1,4 @@
+const Discord = require('discord.js')
 const asyncRedis = require('async-redis');
 module.exports =
     /**
@@ -19,7 +20,17 @@ module.exports =
             console.log(JSON.parse(await redis.get(msg.guild.id)))
             msg.reply('registered this server successfuly!')
 
-            // await redis.get('s')
+            /**@type {Array<string>} */
+            var serverList = (await redis.get('serverList'))
+            if(!serverList)
+                serverList = []
+            else
+                serverList = serverList.split(',')
+
+            if(!serverList.includes(msg.author.id))
+                serverList.push(msg.author.id)
+
+            await redis.set('serverList', serverList.toString())
 
             redis.quit()
         }
