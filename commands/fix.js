@@ -8,14 +8,7 @@ module.exports =
     */
     async (args, msg, client) => {
         const redis = asyncRedis.createClient(process.env.REDISCLOUD_URL)
-        redis.on('ready', () => {
-            console.log('[DB] Connection established')
-        })
-        redis.on('end', () => {
-            console.log('[DB] Connection closed')
-        })
         var db = JSON.parse(await redis.get(msg.guild.id))
-        redis.quit
         if(!db) {
             msg.reply("couldn't find any data related to this server. Try `.register`")
             return

@@ -14,12 +14,6 @@ module.exports =
             }
             var roleId = msg.mentions.roles.first().id
             const redis = asyncRedis.createClient(process.env.REDISCLOUD_URL)
-            redis.on('ready', () => {
-                console.log('[DB] Connection established')
-            })
-            redis.on('end', () => {
-                console.log('[DB] Connection closed')
-            })
             var serverInfo = JSON.parse(await redis.get(msg.guild.id))
 
             if(serverInfo) {
