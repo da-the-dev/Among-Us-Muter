@@ -11,19 +11,19 @@ module.exports =
         var db = JSON.parse(await redis.get(msg.guild.id))
 
         if(!db) {
-            msg.reply("couldn't find any data related to this server. Try `.register`")
+            msg.reply(`couldn't find any data related to this server. Try \`${client.prefix}register\``)
             redis.quit()
             return
         }
         var roleId = db['muteRoleId']
         if(!roleId) {
-            msg.reply('no mute role specified. Try `.addMuteRole @role` first')
+            msg.reply(`no mute role specified. Try \`${client.prefix}addMuteRole @role\` first`)
             redis.quit()
             return
         }
         var voiceChannelId = db['voiceChannel']
         if(!voiceChannelId) {
-            msg.reply('no Among Us voicechannel specified. Try `.addAmongUsChannel <channelid> first`')
+            msg.reply(`no Among Us voicechannel specified. Try \`${client.prefix}addAmongUsChannel <channelid> first\``)
             redis.quit()
             return
         }
