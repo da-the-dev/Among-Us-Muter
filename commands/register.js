@@ -11,7 +11,6 @@ module.exports =
             const redis = asyncRedis.createClient(process.env.REDISCLOUD_URL)
 
             await redis.set(msg.guild.id, JSON.stringify({ "isMuted": false }))
-            console.log(JSON.parse(await redis.get(msg.guild.id)))
             msg.reply('registered this server successfuly!')
 
             /**@type {Array<string>} */
