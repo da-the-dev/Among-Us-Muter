@@ -1,7 +1,7 @@
 const dotenv = require('dotenv').config()
 const Discord = require('discord.js')
 const fs = require('fs')
-const Keyv = require('keyv')
+const asyncRedis = require('async-redis');
 const prefix = "$"
 
 var client = new Discord.Client()
