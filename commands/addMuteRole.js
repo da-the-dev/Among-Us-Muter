@@ -1,5 +1,5 @@
 const Discord = require('discord.js')
-const Keyv = require('keyv')
+const asyncRedis = require('async-redis');
 module.exports =
     /**
      * @param {Array<string>} args Command argument
@@ -13,15 +13,22 @@ module.exports =
                 return
             }
             var roleId = msg.mentions.roles.first().id
-            const keyv = new Keyv(process.env.REDISCLOUD_URL)
-            var serverInfo = await keyv.get(msg.guild.id)
+            const redis = asyncRedis.createClient(process.env.REDISCLOUD_URL)
+            redis.on('ready', () => {
+                console.log('[DB] Connection established')
+            })
+            redis.on('end', () => {
+                console.log('[DB] Connection closed')
+            })
+            var serverInfo = JSON.parse(await redis.get(msg.guild.id))
 
             if(serverInfo) {
                 serverInfo['muteRoleId'] = roleId
-                await keyv.set(msg.guild.id, serverInfo)
+                await redis.set(msg.guild.id, JSON.stringify(serverInfo))
                 msg.reply('mute role added successfuly!')
             } else {
                 msg.reply(`couldn't get any info about this server. Please try \`${prefix}register\``)
             }
+            redis.quit()
         }
     }
