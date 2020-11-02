@@ -2,7 +2,7 @@ const dotenv = require('dotenv').config()
 const Discord = require('discord.js')
 const fs = require('fs')
 const asyncRedis = require('async-redis');
-const prefix = "$"
+const prefix = "."
 
 var client = new Discord.Client()
 
@@ -16,9 +16,9 @@ commandNames.forEach(c =>
     })
 )
 
-client.login(process.env.KEY)
+client.login(process.env.BETAKEY)
 client.once('ready', () => {
-    console.log("Im the Impostor!")
+    console.log("Im the Impostor, but Beta!")
 })
 
 client.on('message', async msg => {
