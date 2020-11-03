@@ -21,6 +21,31 @@ client.once('ready', () => {
     console.log("Im the Impostor, but Beta!")
 })
 
+client.on('voiceStateUpdate', async (voiceState1, voiceState2) => {
+    if(voiceState1.channelID == voiceState2.channelID)
+        return
+
+    const db = asyncRedis.createClient(process.env.REDISCLOUD_URL)
+    var data = JSON.parse(await db.get(voiceState1.guild.id))
+
+    // If user leaves 
+    if(voiceState1.channelID == data.voiceChannel)
+        voiceState2.setMute(false)
+
+    // If user joins
+    if(voiceState2.channelID && voiceState2.channelID == data.voiceChannel)
+        if(data.isMuted)
+            voiceState2.setMute(true)
+        else
+            voiceState2.setMute(false)
+
+    // If user leaves completely
+    if(!voiceState2.channelID && voiceState1.channelID == data.voiceChannel)
+        voiceState1.setMute(false)
+
+    db.quit()
+})
+
 client.on('message', async msg => {
     // Bot commands
     if(!msg.author.bot && msg.content[0] == prefix) {
