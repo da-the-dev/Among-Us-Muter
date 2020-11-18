@@ -4,7 +4,7 @@
 * [Commands](#commands)
 * [Step-by-step setup guide](#Step-by-step-setup-guide)
 * [Patreon](#patreon)
-* [Contact me](#have-questions)
+* [Have questions?](#have-questions)
 # About
 This is a bot that solves the voice chat spam problem when playing Among Us with friends on a Discord server.   
 Have someone who doesn't mute himself/herself when the game started? Someone forgets to un-mute themselves? With Among Us Muter this is no longer an issue! It mutes and un-mute everybody in the voicechannel to stop player from accidentally spoiling if they're Imposter or if someone is. It is very simple to use and set up.
