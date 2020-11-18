@@ -106,14 +106,6 @@ client.on('message', async msg => {
                 if(c.type == 'text' && c.permissionsFor(msg.guild.id).has('SEND_MESSAGES'))
                     console.log(c.name, "yes")
             })
-            // const redis = asyncRedis.createClient(process.env.REDISCLOUD_URL)
-            // var serverList = (await redis.get('serverList')).split(',')
-            // if(serverList) {
-            //     console.log(serverList)
-            // } else {
-            //     console.log('No serverList')
-            // }
-            // redis.quit()
         }
 
         if(msg.content == '.simGuildJoin') {
