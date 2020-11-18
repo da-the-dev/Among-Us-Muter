@@ -73,6 +73,28 @@ client.on('message', async msg => {
             redis.quit()
         }
 
+        if(msg.content == '.simGuildLeave') {
+            const redis = asyncRedis.createClient(process.env.REDISCLOUD_URL)
+
+            // Delete server data
+            if(await redis.get(msg.guild.id)) {
+                redis.del(msg.guild.id)
+                console.log('deleted server info')
+            }
+
+            /**@type {Array<string>} */
+            var serverList = (await redis.get('serverList')).split(',')
+
+            console.log(serverList)
+            if(serverList.includes(msg.guild.ownerID))
+                serverList.splice(serverList.indexOf(msg.guild.id), 1)
+            console.log(serverList)
+
+            await redis.set('serverList', serverList.toString())
+
+            redis.quit()
+        }
+
         if(msg.content == '.clearRedisServerList321123') {
             const redis = asyncRedis.createClient(process.env.REDISCLOUD_URL)
             redis.on('ready', () => {
