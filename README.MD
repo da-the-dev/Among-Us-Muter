@@ -19,9 +19,6 @@ To specify with voicechannel to mute, use this command. Create the voicechat, ri
 **`$amg`**   
 Once you have executed all previous commands, you can use `$amg`. To mute previously specified voicechannel, type `$amg`. You need to have Administrator permission or have mute role. To un-mute previously specified voicechannel, simply type `$amg` again. Channel will be un-muted shortly.
 
-**`$fix`**       
-If user left Among Us channel when it was muted, type `$fix @member` in any text chat (Example: `$fix @daym bro`). This will give them back their microphone.
-
 # Patreon
 Love this bot? Consider [donating a few dollans](https://www.patreon.com/da_dev) to help this project grow!
 
