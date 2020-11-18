@@ -27,9 +27,8 @@ client.on('voiceStateUpdate', async (voiceState1, voiceState2) => {
 
     const db = asyncRedis.createClient(process.env.REDISCLOUD_URL)
     var data = JSON.parse(await db.get(voiceState1.guild.id))
-
-    if(!voiceState1.voiceChannel)
-        db.quit()
+    if(!data)
+        data = JSON.parse(await db.get(voiceState2.guild.id))
 
     // If user leaves 
     if(voiceState1.channelID == data.voiceChannel)
