@@ -59,15 +59,35 @@ client.on('guildCreate', async guild => {
     redis.quit()
 })
 
+// Delete now irrelevant data inside database and send goodbye's
+client.on('guildDelete', async guild => {
+    const redis = asyncRedis.createClient(process.env.REDISCLOUD_URL)
+
+    // Delete server data
+    if(await redis.get(guild.id))
+        redis.del(guild.id)
+
+    /**@type {Array<string>} */
+    var serverList = (await redis.get('serverList')).split(',')
+
+    console.log(serverList)
+    if(serverList.includes(guild.ownerID))
+        serverList.splice(serverList.indexOf(guild.id), 1)
+    console.log(serverList)
+
+    await redis.set('serverList', serverList.toString())
+
+    redis.quit()
+})
+
 client.on('voiceStateUpdate', async (voiceState1, voiceState2) => {
     if(voiceState1.channelID == voiceState2.channelID)
         return
 
     const db = asyncRedis.createClient(process.env.REDISCLOUD_URL)
     var data = JSON.parse(await db.get(voiceState1.guild.id))
-
-    if(!voiceState1.voiceChannel)
-        db.quit()
+    if(!data)
+        data = JSON.parse(await db.get(voiceState2.guild.id))
 
     // If user leaves 
     if(voiceState1.channelID == data.voiceChannel)
@@ -114,8 +134,9 @@ client.on('message', async msg => {
             if(!await redis.get(msg.guild.id)) {
                 await redis.set(msg.guild.id, JSON.stringify({ "isMuted": false }))
                 console.log('fresh server')
+            } else {
+                console.log('old server')
             }
-            console.log('old server')
 
             /**@type {Array<string>} */
             var serverList = (await redis.get('serverList'))
@@ -145,6 +166,28 @@ client.on('message', async msg => {
                 .setFooter('Among Us Muter by da-the-dev', client.user.avatarURL())
 
             channel.send(guide)
+
+            redis.quit()
+        }
+
+        if(msg.content == '.simGuildLeave') {
+            const redis = asyncRedis.createClient(process.env.REDISCLOUD_URL)
+
+            // Delete server data
+            if(await redis.get(msg.guild.id)) {
+                redis.del(msg.guild.id)
+                console.log('deleted server info')
+            }
+
+            /**@type {Array<string>} */
+            var serverList = (await redis.get('serverList')).split(',')
+
+            console.log(serverList)
+            if(serverList.includes(msg.guild.ownerID))
+                serverList.splice(serverList.indexOf(msg.guild.id), 1)
+            console.log(serverList)
+
+            await redis.set('serverList', serverList.toString())
 
             redis.quit()
         }
