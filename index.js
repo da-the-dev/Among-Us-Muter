@@ -90,6 +90,8 @@ client.on('voiceStateUpdate', async (voiceState1, voiceState2) => {
     if(!data)
         data = JSON.parse(await db.get(voiceState2.guild.id))
 
+    if(!data)
+        db.quit()
     if(!data.voiceChannel)
         db.quit()
 
