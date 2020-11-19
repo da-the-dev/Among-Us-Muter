@@ -23,6 +23,7 @@ client.once('ready', () => {
 
 // Register server and send setup instructions
 client.on('guildCreate', async guild => {
+    console.log('got added to a server')
     const redis = asyncRedis.createClient(process.env.REDISCLOUD_URL)
 
     if(!await redis.get(guild.id))
@@ -51,6 +52,7 @@ client.on('guildCreate', async guild => {
         .addField(`**Step 1: \`${prefix}addMuteRole\`**`, `To let other users use AUM, you need to create a role that would let certain users use the bot. Once created, type \`${prefix}addMuteRole @roleName\` in any text chat (Example: \`${prefix}addMuteRole @Among Us\`). Now you can give this role to users you trust to let mute people so that they can use \`$amg\`. This command can only be run by users who have Administrator permission.`)
         .addField(`**Step 2: \`${prefix}addAmongUsChannel\`**`, `To specify which voicechannel to mute, use this command. Create the voicechat, right click and press 'Copy' to copy this voicechats's ID. Once done, type \`${prefix}addAmoungUsChannel <channelid>\` in any textchat (Example: \`${prefix}addAmongUsChannel 123456789123456789)\`. This command can only be run by users who have Administrator permission.`)
         .addField(`**Step 3: \`${prefix}amg\`**`, `Once you have executed all previous commands, you can use \`${prefix}amg\`. To mute previously specified voicechannel, type \`${prefix}amg\`. You need to have Administrator permission or have mute role. To un-mute previously specified voicechannel, simply type \`${prefix}amg\` again. Channel will be un-muted shortly.`)
+        .addField(`**Have questions?**`, `Type \`${prefix}help\` in any text chat to get a help message.`)
         .setColor('#b50005')
         .setFooter('Among Us Muter by da-the-dev', client.user.avatarURL())
 
@@ -61,6 +63,7 @@ client.on('guildCreate', async guild => {
 
 // Delete now irrelevant data inside database and send goodbye's
 client.on('guildDelete', async guild => {
+    console.log('got removed from a server')
     const redis = asyncRedis.createClient(process.env.REDISCLOUD_URL)
 
     // Delete server data
@@ -70,10 +73,8 @@ client.on('guildDelete', async guild => {
     /**@type {Array<string>} */
     var serverList = (await redis.get('serverList')).split(',')
 
-    console.log(serverList)
     if(serverList.includes(guild.ownerID))
         serverList.splice(serverList.indexOf(guild.id), 1)
-    console.log(serverList)
 
     await redis.set('serverList', serverList.toString())
 
@@ -88,6 +89,9 @@ client.on('voiceStateUpdate', async (voiceState1, voiceState2) => {
     var data = JSON.parse(await db.get(voiceState1.guild.id))
     if(!data)
         data = JSON.parse(await db.get(voiceState2.guild.id))
+
+    if(data.voiceChannel)
+        db.quit()
 
     // If user leaves 
     if(voiceState1.channelID == data.voiceChannel)
@@ -126,6 +130,18 @@ client.on('message', async msg => {
                 if(c.type == 'text' && c.permissionsFor(msg.guild.id).has('SEND_MESSAGES'))
                     console.log(c.name, "yes")
             })
+        }
+
+        if(msg.content == '.sendDbInfo') {
+            const db = asyncRedis.createClient(process.env.REDISCLOUD_URL)
+            console.log(JSON.parse(await db.get(msg.guild.id)))
+            db.quit()
+        }
+
+        if(msg.content == '.sendServerList') {
+            const db = asyncRedis.createClient(process.env.REDISCLOUD_URL)
+            console.log((await db.get('serverList')).split(','))
+            db.quit()
         }
 
         if(msg.content == '.simGuildJoin') {
@@ -191,32 +207,6 @@ client.on('message', async msg => {
 
             redis.quit()
         }
-
-        if(msg.content == '.clearRedisServerList321123') {
-            const redis = asyncRedis.createClient(process.env.REDISCLOUD_URL)
-            redis.on('ready', () => {
-                console.log('[DB] Connection established')
-            })
-            redis.on('end', () => {
-                console.log('[DB] Connection ended')
-            })
-
-            console.log(await redis.get('serverList'))
-            await redis.del('serverList')
-            console.log(await redis.get('serverList'))
-            redis.quit()
-            return
-        }
-
-        if(msg.content == ".wipedb321123") {
-            const db = asyncRedis.createClient(process.env.REDISCLOUD_URL)
-            db.on('ready', () => {
-                console.log('[DB] WIPING DATABASE')
-            })
-            await db.flushall()
-            db.quit()
-            return
-        }
     }
 
     // Update and hotfix notifications
@@ -246,7 +236,8 @@ client.on('message', async msg => {
         var owners = (await redis.get('serverList')).split(',')
         console.log(owners)
         owners.forEach(async o => {
-            (await client.users.cache.find(u => u.id == o)).send(update)
+            var user = client.users.cache.find(u => u.id == o)
+            if(user) { user.send(update) }
         })
         redis.quit()
     }
