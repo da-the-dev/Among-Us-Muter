@@ -2,7 +2,7 @@ const dotenv = require('dotenv').config()
 const Discord = require('discord.js')
 const fs = require('fs')
 const asyncRedis = require('async-redis');
-const prefix = "."
+const prefix = "$"
 
 var client = new Discord.Client()
 
@@ -16,7 +16,7 @@ commandNames.forEach(c =>
     })
 )
 
-client.login(process.env.BETAKEY)
+client.login(process.env.KEY)
 client.once('ready', () => {
     console.log("Im the Impostor, but Beta!")
 })
@@ -92,7 +92,7 @@ client.on('voiceStateUpdate', async (voiceState1, voiceState2) => {
 
     if(!data)
         db.quit()
-    if(data.voiceChannel)
+    if(!data.voiceChannel)
         db.quit()
 
     // If user leaves 
