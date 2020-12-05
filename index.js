@@ -9,108 +9,30 @@ var client = new Discord.Client()
 var commandNames = fs.readdirSync(__dirname + '/commands')
 client.commands = new Array()
 client.prefix = prefix
-commandNames.forEach(c =>
+commandNames.forEach(c => {
     client.commands.push({
         'name': c.slice(0, c.length - 3),
         'foo': require(__dirname + '/commands/' + c)
     })
-)
+    console.log({
+        'name': c.slice(0, c.length - 3),
+        'foo': require(__dirname + '/commands/' + c)
+    })
+})
 
 client.login(process.env.BETAKEY)
 client.once('ready', () => {
     console.log("Im the Impostor, but Beta!")
 })
 
-// Register server and send setup instructions
 client.on('guildCreate', async guild => {
-    console.log('got added to a server')
-    const redis = asyncRedis.createClient(process.env.REDISCLOUD_URL)
-
-    if(!await redis.get(guild.id))
-        await redis.set(guild.id, JSON.stringify({ "isMuted": false }))
-
-    /**@type {Array<string>} */
-    var serverList = (await redis.get('serverList'))
-    if(!serverList)
-        serverList = []
-    else
-        serverList = serverList.split(',')
-
-    if(!serverList.includes(guild.ownerID))
-        serverList.push(guild.ownerID)
-
-    await redis.set('serverList', serverList.toString())
-
-    /**@type {Discord.TextChannel} */
-    var channel = guild.channels.cache.find(c => c.type == "text" && (c.name == "general" || c.name == "main"))
-    if(!channel)
-        channel = guild.channels.cache.find(c => c.type == "text" && c.permissionsFor(guild.id).has('SEND_MESSAGES'))
-
-    const guide = new Discord.MessageEmbed()
-        .setTitle('Thanks for adding Among Us Muter to your server!')
-        .setDescription(`Here's a step-by-step guide "How to set up Among Us Muter On Your Server"`)
-        .addField(`**Step 1: \`${prefix}addMuteRole\`**`, `To let other users use AUM, you need to create a role that would let certain users use the bot. Once created, type \`${prefix}addMuteRole @roleName\` in any text chat (Example: \`${prefix}addMuteRole @Among Us\`). Now you can give this role to users you trust to let mute people so that they can use \`$amg\`. This command can only be run by users who have Administrator permission.`)
-        .addField(`**Step 2: \`${prefix}addAmongUsChannel\`**`, `To specify which voicechannel to mute, use this command. Create the voicechat, right click and press 'Copy' to copy this voicechats's ID. Once done, type \`${prefix}addAmoungUsChannel <channelid>\` in any textchat (Example: \`${prefix}addAmongUsChannel 123456789123456789)\`. This command can only be run by users who have Administrator permission.`)
-        .addField(`**Step 3: \`${prefix}amg\`**`, `Once you have executed all previous commands, you can use \`${prefix}amg\`. To mute previously specified voicechannel, type \`${prefix}amg\`. You need to have Administrator permission or have mute role. To un-mute previously specified voicechannel, simply type \`${prefix}amg\` again. Channel will be un-muted shortly.`)
-        .addField(`**Have questions?**`, `Type \`${prefix}help\` in any text chat to get a help message.`)
-        .setColor('#b50005')
-        .setFooter('Among Us Muter by da-the-dev', client.user.avatarURL())
-
-    channel.send(guide)
-
-    redis.quit()
+    client.commands.find(a => a.name == "_guildcreate").foo()
 })
-
-// Delete now irrelevant data inside database and send goodbye's
 client.on('guildDelete', async guild => {
-    console.log('got removed from a server')
-    const redis = asyncRedis.createClient(process.env.REDISCLOUD_URL)
-
-    // Delete server data
-    if(await redis.get(guild.id))
-        redis.del(guild.id)
-
-    /**@type {Array<string>} */
-    var serverList = (await redis.get('serverList')).split(',')
-
-    if(serverList.includes(guild.ownerID))
-        serverList.splice(serverList.indexOf(guild.id), 1)
-
-    await redis.set('serverList', serverList.toString())
-
-    redis.quit()
+    client.commands.find(a => a.name == "_guilddelete").foo()
 })
-
 client.on('voiceStateUpdate', async (voiceState1, voiceState2) => {
-    if(voiceState1.channelID == voiceState2.channelID)
-        return
-
-    const db = asyncRedis.createClient(process.env.REDISCLOUD_URL)
-    var data = JSON.parse(await db.get(voiceState1.guild.id))
-    if(!data)
-        data = JSON.parse(await db.get(voiceState2.guild.id))
-
-    if(!data)
-        db.quit()
-    if(!data.voiceChannel)
-        db.quit()
-
-    // If user leaves 
-    if(voiceState1.channelID == data.voiceChannel)
-        voiceState2.setMute(false)
-
-    // If user joins
-    if(voiceState2.channelID && voiceState2.channelID == data.voiceChannel)
-        if(data.isMuted)
-            voiceState2.setMute(true)
-        else
-            voiceState2.setMute(false)
-
-    // If user leaves completely
-    if(!voiceState2.channelID && voiceState1.channelID == data.voiceChannel)
-        voiceState1.setMute(false)
-
-    db.quit()
+    client.commands.find(a => a.name == "_voicestateupdate").foo()
 })
 
 client.on('message', async msg => {
@@ -128,10 +50,10 @@ client.on('message', async msg => {
     // Development tools
     if(!msg.author.bot && msg.content[0] == "." && msg.author.id == process.env.MY_ID) {
         if(msg.content == ".test") {
-            msg.guild.channels.cache.forEach(c => {
-                if(c.type == 'text' && c.permissionsFor(msg.guild.id).has('SEND_MESSAGES'))
-                    console.log(c.name, "yes")
-            })
+            // msg.guild.channels.cache.forEach(c => {
+            //     if(c.type == 'text' && c.permissionsFor(msg.guild.id).has('SEND_MESSAGES'))
+            //         console.log(c.name, "yes")
+            // })
         }
 
         if(msg.content == '.sendDbInfo') {
