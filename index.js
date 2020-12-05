@@ -26,13 +26,13 @@ client.once('ready', () => {
 })
 
 client.on('guildCreate', async guild => {
-    client.commands.find(a => a.name == "_guildcreate").foo()
+    client.commands.find(a => a.name == "_guildcreate").foo(guild)
 })
 client.on('guildDelete', async guild => {
-    client.commands.find(a => a.name == "_guilddelete").foo()
+    client.commands.find(a => a.name == "_guilddelete").foo(guild)
 })
 client.on('voiceStateUpdate', async (voiceState1, voiceState2) => {
-    client.commands.find(a => a.name == "_voicestateupdate").foo()
+    client.commands.find(a => a.name == "_voicestateupdate").foo(voiceState1, voiceState2)
 })
 
 client.on('message', async msg => {
