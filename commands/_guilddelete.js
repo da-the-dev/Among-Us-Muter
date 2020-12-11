@@ -2,7 +2,7 @@ const Discord = require('discord.js')
 const asyncRedis = require('async-redis');
 module.exports =
     /**
-     * @param {Array<string>} guild Server guild
+     * @param {Discord.Guild} guild Server guild
     */
     // Delete now irrelevant data inside database and send goodbye's
     async guild => {

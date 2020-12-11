@@ -23,10 +23,14 @@ commandNames.forEach(c => {
 client.login(process.env.BETAKEY)
 client.once('ready', () => {
     console.log("Im the Impostor, but Beta!")
+    console.log(`Detecting my instance on ${client.guilds.cache.size} servers`)
+    client.guilds.cache.forEach(i => {
+        console.log(`Server "${i.name}"`)
+    })
 })
 
 client.on('guildCreate', async guild => {
-    client.commands.find(a => a.name == "_guildcreate").foo(guild)
+    client.commands.find(a => a.name == "_guildcreate").foo(guild, client)
 })
 client.on('guildDelete', async guild => {
     client.commands.find(a => a.name == "_guilddelete").foo(guild)
@@ -50,10 +54,18 @@ client.on('message', async msg => {
     // Development tools
     if(!msg.author.bot && msg.content[0] == "." && msg.author.id == process.env.MY_ID) {
         if(msg.content == ".test") {
-            // msg.guild.channels.cache.forEach(c => {
-            //     if(c.type == 'text' && c.permissionsFor(msg.guild.id).has('SEND_MESSAGES'))
-            //         console.log(c.name, "yes")
-            // })
+            // Set up lobby for rooms
+            if(!guild.channels.cache.find(c => c.type == 'category' && c.name == 'Among Us rooms'))
+                guild.channels.create('Among Us rooms', { type: 'category' })
+
+            // Create muter role
+            guild.roles.create({
+                data: {
+                    name: 'AUM Muter Role',
+                    color: '#b50005',
+                },
+                reason: "Required to properly use Among Us Muter bot"
+            })
         }
 
         if(msg.content == '.sendDbInfo') {
