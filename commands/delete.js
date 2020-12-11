@@ -9,7 +9,7 @@ module.exports =
     async (args, msg, client) => {
         // Delete lobby for rooms
         /**@type {Discord.CategoryChannel} */
-        var category = guild.channels.cache.find(c => c.type == 'category' && c.name == 'Among Us rooms')
+        var category = msg.guild.channels.cache.find(c => c.type == 'category' && c.name == 'Among Us rooms')
         if(category) {
             category.children.forEach(c => {
                 c.delete()
@@ -17,8 +17,11 @@ module.exports =
         }
         category.delete()
 
-        // Delete muter role
-        var role = guild.roles.cache.find(r => r.name == 'AUM Muter Role')
-        if(role)
-            role.delete()
+        // Create unnecessary roles
+        var muterRole = msg.guild.roles.cache.find(r => r.name == 'AUM Muter Role')
+        var unmutedTagRole = msg.guild.roles.cache.find(r => r.name == 'TAG: Unmuted')
+        var mutedTagRole = msg.guild.roles.cache.find(r => r.name == 'TAG: Muted')
+        if(muterRole) muterRole.delete()
+        if(mutedTagRole) mutedTagRole.delete()
+        if(unmutedTagRole) unmutedTagRole.delete()
     }

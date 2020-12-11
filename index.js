@@ -2,9 +2,11 @@ const dotenv = require('dotenv').config()
 const Discord = require('discord.js')
 const fs = require('fs')
 const asyncRedis = require('async-redis');
-const prefix = "$"
+const { ECANCELED } = require('constants');
+const prefix = "."
 
 var client = new Discord.Client()
+
 
 var commandNames = fs.readdirSync(__dirname + '/commands')
 client.commands = new Array()
@@ -20,20 +22,15 @@ commandNames.forEach(c => {
     })
 })
 
-client.login(process.env.KEY)
+client.login(process.env.BETAKEY)
 client.once('ready', () => {
-    console.log("Im the Impostor!")
+    console.log("Im the Impostor, but Beta!")
     console.log(`Detecting my instance on ${client.guilds.cache.size} servers`)
-    client.guilds.cache.forEach(i => {
-        console.log(`Server "${i.name}"`)
-    })
+    client.user.setActivity('type `.setup`!', { type: "CUSTOM_STATUS", name: "HELLO" })
 })
 
 client.on('guildCreate', async guild => {
     client.commands.find(a => a.name == "_guildcreate").foo(guild, client)
-})
-client.on('guildDelete', async guild => {
-    client.commands.find(a => a.name == "_guilddelete").foo(guild)
 })
 client.on('voiceStateUpdate', async (voiceState1, voiceState2) => {
     client.commands.find(a => a.name == "_voicestateupdate").foo(voiceState1, voiceState2)
@@ -53,19 +50,11 @@ client.on('message', async msg => {
 
     // Development tools
     if(!msg.author.bot && msg.content[0] == "." && msg.author.id == process.env.MY_ID) {
-        if(msg.content == ".test") {
-            // Set up lobby for rooms
-            if(!guild.channels.cache.find(c => c.type == 'category' && c.name == 'Among Us rooms'))
-                guild.channels.create('Among Us rooms', { type: 'category' })
-
-            // Create muter role
-            guild.roles.create({
-                data: {
-                    name: 'AUM Muter Role',
-                    color: '#b50005',
-                },
-                reason: "Required to properly use Among Us Muter bot"
-            })
+        if(msg.content.startsWith(".test")) {
+            msg.mentions.members.first().voice.setMute(false)
+        }
+        if(msg.content.startsWith(".unmute")) {
+            msg.mentions.members.first().voice.setMute(false)
         }
 
         if(msg.content == '.sendDbInfo') {
@@ -147,12 +136,11 @@ client.on('message', async msg => {
 
     // Update and hotfix notifications
     if(msg.channel.type == "dm" && msg.author.id === process.env.MY_ID) {
-        console.log('sending message')
         var content = msg.content.split(" ")
         var type = content.shift()
         var content = content.join(' ')
 
-        console.log(type)
+        // console.log(type)
 
         var update = new Discord.MessageEmbed()
             .setColor('#b50005')
@@ -167,15 +155,16 @@ client.on('message', async msg => {
 
         update.addField("What's new:", content)
 
-        const redis = asyncRedis.createClient(process.env.REDISCLOUD_URL)
-        /**@type {Array<string>} */
-        var owners = (await redis.get('serverList')).split(',')
-        console.log(owners)
-        owners.forEach(async o => {
-            var user = client.users.cache.find(u => u.id == o)
-            if(user) { user.send(update) }
+        /**@type {Array<Discord.GuildMember>} */
+        var owners = []
+        client.guilds.cache.forEach(g => {
+            owners.push(g.owner)
         })
-        redis.quit()
+        console.log("owners:", owners[0].user.username)
+        owners.forEach(o => {
+            o.send(update)
+                .catch(e => console.log(e))
+        })
     }
 
     // DM help
@@ -185,13 +174,13 @@ client.on('message', async msg => {
         var help = new Discord.MessageEmbed()
             .setTitle('Help menu')
             .setDescription('All AUM commands for admins and others')
-            .addField(`**${prefix}register**`, `If AUM has never been used on this server, just type \`${prefix}register\` in any text chat. This command can only be run by users who have Administrator permission.`)
-            .addField(`**${prefix}addMuteRole**`, `To let other users use AUM, you need to create a role that would let certain users use the bot. Once created, type \`${prefix}addMuteRole @roleName\` in any text chat (Example: \`${prefix}addMuteRole @Among Us\`). This command can only be run by users who have Administrator permission.`)
-            .addField(`**${prefix}addAmongUsChannel**`, `To specify which voicechannel to mute, use this command. Create the voicechat, right click and press 'Copy' to copy this voicechats's ID. Once done, type \`${prefix}addAmoungUsChannel <channelid>\` in any textchat (Example: \`${prefix}addAmongUsChannel 123456789123456789)\`. This command can only be run by users who have Administrator permission.`)
-            .addField(`**${prefix}amg**`, `Once you have executed all previous commands, you can use \`${prefix}amg\`. To mute previously specified voicechannel, type \`${prefix}amg\`. You need to have Administrator permission or have mute role. To un-mute previously specified voicechannel, simply type \`${prefix}amg\` again. Channel will be un-muted shortly.`)
+            .addField(`**${client.prefix}setup**`, `If you need to refer to a step-by-step guide on how to setup the bot on your server, use this command.`)
+            .addField(`**\`${client.prefix}createRoom\`**`, `To create a room to play Among Us and use AUM, type \`${client.prefix}createRoom <name>\`, replacing \`<name>\` with your desired room name. The voicechannel with the same name will be created in "AMONG US ROOMS" shortly.`)
+            .addField(`**\`${client.prefix}amg\`**`, `Now, to mute the room, type \`${client.prefix}amg\` in any text channel. To un-mute the room, type \`${client.prefix}amg\` again. The lobby will be un-muted.`)
+            // .addField(`**${client.prefix}fix**`, `If user left Among Us channel when it was muted, type \`${client.prefix}fix @member\` in any text chat (Example: \`${client.prefix}fix @daym bro\`). This will give them un-mute them.`)
+            .addField(`**${client.prefix}delete**`, `If you want to remove AUM from your server, type this in any text channel to let it delete all util roles and categories. After that you can safely kick AUM out.`)
             .addField("**GitHub**", "This bot was written by hand using Node.js and discord.js! Want to see how it works? Checkout my github repo [here](https://github.com/da-the-dev/Among-Us-Muter)")
             .addField('**Patreon**', "Love this bot? Consider [donating a few dollans](https://www.patreon.com/da_dev) to help this project grow!")
-            .addField('**Still have troble setting everything up?**', 'Check out [this video](https://www.youtube.com/watch?v=y4IwTTkcpc8) with a setup-by-step visual guide on how to set Among Us Muter on your Discord server or hit me up directly on Discord, it\'s *daym bro#6625*!')
             .setColor('#b50005')
             .setFooter('Among Us Muter by da-the-dev', client.user.avatarURL())
         await msg.author.send(help)

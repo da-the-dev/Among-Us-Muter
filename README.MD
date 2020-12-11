@@ -1,6 +1,6 @@
 # Among Us Muter
 ### Navigator
-* [Add link](#add-link)
+* [Invite link](#invite-link)
 * [Commands](#commands)
 * [Step-by-step setup guide](#Step-by-step-setup-guide)
 * [Patreon](#patreon)
@@ -8,7 +8,7 @@
 # About
 This is a bot that solves the voice chat spam problem when playing Among Us with friends on a Discord server.   
 Have someone who doesn't mute himself/herself when the game started? Someone forgets to un-mute themselves? With Among Us Muter this is no longer an issue! It mutes and un-mute everybody in the voicechannel to stop player from accidentally spoiling if they're Imposter or if someone is. It is very simple to use and set up.
-## Add link
+## Invite link
 [Click here to add this bot to your server](https://discord.com/api/oauth2/authorize?client_id=765647669632172043&permissions=281029648&scope=bot)
 ## How to set up
 Check out [this](https://www.youtube.com/watch?v=y4IwTTkcpc8) video for instruction on how to set it up and use it *or* 
@@ -18,24 +18,29 @@ All AUM commands for admins and others
 **`$setup`**     
 If you need to refer to a step-by-step guide on how to setup the bot on your server, use this command.
 
-**`$addMuteRole`**   
-To let other users use AUM, you need to create a role that would let certain users use the bot. Once created, type `$addMuteRole @roleName` in any text chat (Example: `$addMuteRole @Among Us`). This command can only be run by users who have Administrator permission.
-
-**`$addAmongUsChannel`**      
-To specify with voicechannel to mute, use this command. Create the voicechat, right click and press 'Copy' to copy this voicechats's ID. Once done, type `$addAmoungUsChannel <channelid>` in any textchat (Example: `$addAmongUsChannel 123456789123456789`). This command can only be run by users who have Administrator permission.
+**`$createRoom`**
+To create a room to play Among Us and use AUM, type `$createRoom <name>`, replacing `<name>` with your desired room name. The voicechannel with the same name will be created in "AMONG US ROOMS" shortly.
 
 **`$amg`**   
-Once you have executed all previous commands, you can use `$amg`. To mute previously specified voicechannel, type `$amg`. You need to have Administrator permission or have mute role. To un-mute previously specified voicechannel, simply type `$amg` again. Channel will be un-muted shortly.
+Now, to mute the room, type `$amg` in any text channel. To un-mute the room, type `$amg` again. The lobby will be un-muted.
+
+**`$delete`**   
+If you want to remove AUM from your server, type this in any text channel to let it delete all util roles and categories. After that you can safely kick AUM out.
 # Step-by-step setup guide
 
-* #### **Step 1:** `$addMuteRole`
-    To let other users use AUM, you need to create a role that would let certain users use the bot. Once created, type `${prefix}addMuteRole @roleName` in any text chat (Example: `$addMuteRole @Among Us`). Now you can give this role to users you trust to let mute people so that they can use `$amg`. This command can only be run by users who have Administrator permission.
-* #### **Step 2:** `$addAmongUsChannel`
-    To specify which voicechannel to mute, use this command. Create the voicechat, right click and press 'Copy' to copy this voicechats's ID. Once done, type `$addAmoungUsChannel <channelid>` in any textchat (Example: `$addAmongUsChannel 123456789123456789)`. This command can only be run by users who have Administrator permission.
-* #### **Step 3:** `$amg`
-    Once you have executed all previous commands, you can use `$amg`. To mute previously specified voicechannel, type `$amg`. You need to have Administrator permission or have mute role. To un-mute previously specified voicechannel, simply type `$amg` again. Channel will be un-muted shortly.
+* #### **Step 1:** Look at your server's categories
+    After you add you add AUM to your server make sure that there's a new category called "AMONG US ROOMS". This is where all of the voice channels for AUM are going to be created.
+* #### **Step 2:** `$createRoom`
+    To create a room to play Among Us and use AUM, type `$createRoom <name>`, replacing `<name>` with your desired room name. The voicechannel with the same name will be created in "AMONG US ROOMS" shortly.
+* #### **Step 3:** Join the room
+    Once you've joined the room, you will recieve 2 roles: 'AUM Muter Role' and 'TAG: Unmuted'. Don't worry about the second role, it is used by the bot. You just have to make sure you have these roles.
+* #### **Step 4:** Bring your friends in the same voicechannel and when the game started type `$amg`
+    Now, to mute the room, type `$amg` in any text channel. To un-mute the room, type `$amg` again. The lobby will be un-muted.
+* #### **Step 5:** Play!
+    Just and play enjoy Among Us!
+* #### **Step 6:** When you're done
+    Once you're done playing, just leave the voicechannel. It will delete itself after about a half a minute.
 
-* #### Done! Enjoy!
 # Patreon
 Love this bot? Consider [donating a few dollans](https://www.patreon.com/da_dev) to help this project grow!
 
