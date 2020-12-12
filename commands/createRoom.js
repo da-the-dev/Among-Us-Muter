@@ -14,18 +14,28 @@ module.exports =
 
         if(!args[1]) {
             msg.reply('no room name specified!')
+                .then(m => {
+                    m.delete(5000)
+                })
             return
         }
 
-        msg.guild.channels.create(args[1], { type: 'voice', userLimit: 10, parent: category })
+        args.shift()
+        var roomName = args.join(' ')
 
-        // Delete the channel if empty for 30 seconds
-        var id = setInterval(async () => {
-            category.children.forEach(async c => {
-                if(c.type == 'voice' && c.members.size <= 0) {
-                    await c.delete()
-                    clearInterval(id)
-                }
+        // Create the room and delete it if empty for 30 seconds
+        msg.guild.channels.create(roomName, { type: 'voice', userLimit: 10, parent: category })
+            .then(c => {
+                setTimeout(chan => {
+                    if(chan.members.size <= 0) {
+                        chan.delete()
+                        return
+                    }
+                }, 30000, c)
             })
-        }, 30000)
+
+        msg.reply(`room \`${roomName}\` has been created!`)
+            .then(m => {
+                m.delete({ timeout: 5000 })
+            })
     }

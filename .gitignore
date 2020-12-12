@@ -1,5 +1,7 @@
 .env
 /.vscode
 /node_modules
+#test.js
+#test.md
 test.*
 /proj
