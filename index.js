@@ -1,9 +1,7 @@
 const dotenv = require('dotenv').config()
-const { createClient } = require('async-redis')
 const Discord = require('discord.js')
 const fs = require('fs')
-const { type } = require('os')
-const prefix = "."
+const prefix = "$"
 
 var client = new Discord.Client()
 
@@ -21,9 +19,9 @@ commandNames.forEach(c => {
     })
 })
 
-client.login(process.env.BETAKEY)
+client.login(process.env.KEY)
 client.once('ready', () => {
-    console.log("Im the Impostor, but Beta!")
+    console.log("Im the Impostor!")
     console.log(`Detecting my instance on ${client.guilds.cache.size} servers`)
     client.user.setActivity('type `.setup`!', { type: 'WATCHING' })
 
