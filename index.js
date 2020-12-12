@@ -102,8 +102,7 @@ client.on('message', async msg => {
         owners.forEach(o => {
             var owner = client.users.cache.find(u => u.id == o)
             if(owner)
-                owner.send(update)
-                    .catch(e => console.log(e))
+                try { owner.send(update) } catch(e) { console.log(e) }
         })
     }
 
