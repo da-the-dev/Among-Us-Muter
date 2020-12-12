@@ -100,8 +100,10 @@ client.on('message', async msg => {
             owners.push(g.ownerID)
         })
         owners.forEach(o => {
-            client.users.cache.find(u => u.id == o).send(update)
-                .catch(e => console.log(e))
+            var owner = client.users.cache.find(u => u.id == o)
+            if(owner)
+                owner.send(update)
+                    .catch(e => console.log(e))
         })
     }
 
