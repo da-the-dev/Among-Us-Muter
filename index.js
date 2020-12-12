@@ -102,7 +102,9 @@ client.on('message', async msg => {
         owners.forEach(o => {
             var owner = client.users.cache.find(u => u.id == o)
             if(owner)
-                try { owner.send(update) } catch(e) { console.log(e) }
+                owner.createDM().then(o => {
+                    o.send(update)
+                })
         })
     }
 
