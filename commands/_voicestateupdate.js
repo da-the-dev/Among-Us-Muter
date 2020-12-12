@@ -19,23 +19,20 @@ module.exports =
         var category = newState.guild.channels.cache.find(c => c.type == 'category' && c.name == 'Among Us rooms')
 
         // console.log(exists(oldChannel), exists(newChannel), exists(oldChannel) && oldChannel.parent == category, exists(newChannel) && newChannel.parent == category)
+        // console.log(oldState.mute, newState.mute)
 
-        // Mute status change (must ignore any role-related changes)
-        if(exists(oldChannel) && exists(newChannel))
-            if(exists(oldChannel) && exists(newChannel) && oldChannel.parent == category && newChannel.parent == category)
-                return
-
+        // mute status change
+        if(oldState.mute != newState.mute) {
+            // console.log('mute status change')
+            return
+        }
         // Connected
         if(exists(oldChannel) && exists(newChannel) && newChannel.parent == category) {
             // console.log('connected')
 
             var muterRole = newState.guild.roles.cache.find(r => r.name == 'AUM Muter Role')
             var unmutedTagRole = newState.guild.roles.cache.find(r => r.name == 'TAG: Unmuted')
-            var mutedTagRole = newState.guild.roles.cache.find(r => r.name == 'TAG: Muted')
-            // console.log(exists(muterRole), exists(unmutedTagRole), exists(mutedTagRole))
-            // console.log(muterRole.id, unmutedTagRole.id, mutedTagRole.id)
 
-            // console.log(newChannel.members.size)
             if(newChannel.members.size == 1) {
                 await newState.member.roles.add(muterRole)
                 await newState.member.roles.add(unmutedTagRole)
@@ -49,8 +46,6 @@ module.exports =
             var muterRole = oldState.guild.roles.cache.find(r => r.name == 'AUM Muter Role')
             var unmutedTagRole = oldState.guild.roles.cache.find(r => r.name == 'TAG: Unmuted')
             var mutedTagRole = oldState.guild.roles.cache.find(r => r.name == 'TAG: Muted')
-            // console.log(exists(muterRole), exists(unmutedTagRole), exists(mutedTagRole))
-            // console.log(muterRole.id, unmutedTagRole.id, mutedTagRole.id)
 
             if(oldChannel.members.size != 0) {
                 /**@type {Discord.GuildMember} */

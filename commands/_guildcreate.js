@@ -9,10 +9,19 @@ module.exports =
 
         /**@type {Discord.TextChannel} */
         var channel = guild.channels.cache.find(c => c.type == "text" && (c.name == "general" || c.name == "main"))
-        if(!channel)
-            channel = guild.channels.cache.find(c => c.type == "text" && c.permissionsFor(guild.id).has('SEND_MESSAGES'))
+        if(!channel) {
+            /**@type {Discord.Collection} */
+            var channels = guild.channels.cache.filter(c => c.type == "text" && c.permissionsFor(guild.id).has('SEND_MESSAGES'))
 
-        //!!!UPDATE!!!
+            channels.sort((c1, c2) => {
+                if(c1.name > c2.name) return 1
+                if(c1.name < c2.name) return -1
+                return 0
+            })
+            channel = channels.first()
+        }
+        console.log(channel.position, channel.rawPosition)
+
         const guide = new Discord.MessageEmbed()
             .setTitle('Thanks for adding Among Us Muter to your server!')
             .setDescription(`Here's a step-by-step guide "How to set up Among Us Muter On Your Server"`)
