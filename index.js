@@ -64,9 +64,8 @@ client.on('message', async msg => {
     // Development tools
     if(!msg.author.bot && msg.content[0] == "." && msg.author.id == process.env.MY_ID) {
         if(msg.content.startsWith(".test")) {
-            msg.guild.channels.cache.find(c => c.name == "Text channels").children.forEach(c => {
-                if(Date.now() - c.createdTimestamp > 30000)
-                    console.log('channel older that 30 seconds')
+            client.guilds.cache.forEach(g => {
+                console.log(g.owner.user.username)
             })
         }
         if(msg.content.startsWith(".unmute")) {
