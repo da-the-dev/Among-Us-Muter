@@ -23,7 +23,7 @@ client.login(process.env.KEY)
 client.once('ready', () => {
     console.log("Im the Impostor!")
     console.log(`Detecting my instance on ${client.guilds.cache.size} servers`)
-    client.user.setActivity('type `.setup`!', { type: 'WATCHING' })
+    client.user.setActivity('type `$setup`!', { type: 'WATCHING' })
 
     // Double check to delete all old and empty rooms
     //!!!FIX!!! Unknown Channel error at delete
