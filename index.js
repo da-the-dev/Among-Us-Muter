@@ -47,8 +47,6 @@ client.on('voiceStateUpdate', async (voiceState1, voiceState2) => {
     client.commands.find(a => a.name == "_voicestateupdate").foo(voiceState1, voiceState2)
 })
 
-
-
 client.on('message', async msg => {
     // Bot commands
     if(!msg.author.bot && msg.content[0] == prefix) {
@@ -64,8 +62,9 @@ client.on('message', async msg => {
     // Development tools
     if(!msg.author.bot && msg.content[0] == "." && msg.author.id == process.env.MY_ID) {
         if(msg.content.startsWith(".test")) {
+            var counter = 0
             client.guilds.cache.forEach(g => {
-                console.log(g.owner.user.username)
+                console.log(g.owner)
             })
         }
         if(msg.content.startsWith(".unmute")) {
@@ -93,17 +92,11 @@ client.on('message', async msg => {
         update.addField("What's new:", content)
 
         //!!!FIX!!! Cannot send messages to this user
-        /**@type {Array<Discord.GuildMember>} */
-        var owners = []
         client.guilds.cache.forEach(g => {
-            owners.push(g.ownerID)
-        })
-        owners.forEach(o => {
-            var owner = client.users.cache.find(u => u.id == o)
-            if(owner)
-                owner.createDM().then(o => {
-                    o.send(update)
-                })
+            client.users.cache.forEach(u => {
+                if(u.id == g.ownerID)
+                    u.send(update)
+            })
         })
     }
 

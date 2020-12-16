@@ -15,9 +15,9 @@ module.exports =
             if(msg.member.roles.cache.has(unmutedTagRole.id)) {
                 msg.member.voice.channel.members.forEach(async m => {
                     m.voice.setMute(true)
-                    await msg.member.roles.remove(unmutedTagRole)
-                    await msg.member.roles.add(mutedTagRole)
                 })
+                await msg.member.roles.remove(unmutedTagRole)
+                await msg.member.roles.add(mutedTagRole)
                 msg.reply('channel muted! SHHHHHHHHH!')
                     .then(msg => {
                         msg.delete({ timeout: 5000 })
@@ -27,9 +27,9 @@ module.exports =
             if(msg.member.roles.cache.has(mutedTagRole.id)) {
                 msg.member.voice.channel.members.forEach(async m => {
                     m.voice.setMute(false)
-                    await msg.member.roles.remove(mutedTagRole)
-                    await msg.member.roles.add(unmutedTagRole)
                 })
+                await msg.member.roles.remove(mutedTagRole)
+                await msg.member.roles.add(unmutedTagRole)
                 msg.reply('channel un-muted! Speak!')
                     .then(msg => {
                         msg.delete({ timeout: 5000 })
