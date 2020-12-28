@@ -62,10 +62,18 @@ client.on('message', async msg => {
     // Development tools
     if(!msg.author.bot && msg.content[0] == "." && msg.author.id == process.env.MY_ID) {
         if(msg.content.startsWith(".test")) {
-            var counter = 0
-            client.guilds.cache.forEach(g => {
-                console.log(g.owner)
-            })
+            const exists = (v) => {
+                if(v)
+                    return true
+                else
+                    return false
+            }
+
+            var muterRole = msg.guild.roles.cache.find(r => r.name == 'AUM Muter Role')
+            var unmutedTagRole = msg.guild.roles.cache.find(r => r.name == 'TAG: Unmuted')
+            var mutedTagRole = msg.guild.roles.cache.find(r => r.name == 'TAG: Muted')
+
+            console.log(exists(muterRole), exists(mutedTagRole), exists(unmutedTagRole))
         }
         if(msg.content.startsWith(".unmute")) {
             msg.mentions.members.first().voice.setMute(false)
