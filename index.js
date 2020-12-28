@@ -1,8 +1,6 @@
 const dotenv = require('dotenv').config()
-const { createClient } = require('async-redis')
 const Discord = require('discord.js')
 const fs = require('fs')
-const { type } = require('os')
 const prefix = "."
 
 var client = new Discord.Client()
@@ -66,10 +64,18 @@ client.on('message', async msg => {
     // Development tools
     if(!msg.author.bot && msg.content[0] == "." && msg.author.id == process.env.MY_ID) {
         if(msg.content.startsWith(".test")) {
-            msg.guild.channels.cache.find(c => c.name == "Text channels").children.forEach(c => {
-                if(Date.now() - c.createdTimestamp > 30000)
-                    console.log('channel older that 30 seconds')
-            })
+            const exists = (v) => {
+                if(v)
+                    return true
+                else
+                    return false
+            }
+
+            var muterRole = msg.guild.roles.cache.find(r => r.name == 'AUM Muter Role')
+            var unmutedTagRole = msg.guild.roles.cache.find(r => r.name == 'TAG: Unmuted')
+            var mutedTagRole = msg.guild.roles.cache.find(r => r.name == 'TAG: Muted')
+
+            console.log(exists(muterRole), exists(mutedTagRole), exists(unmutedTagRole))
         }
         if(msg.content.startsWith(".unmute")) {
             msg.mentions.members.first().voice.setMute(false)
