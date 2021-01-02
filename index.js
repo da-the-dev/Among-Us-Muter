@@ -26,7 +26,7 @@ client.once('ready', () => {
     console.log(`Detecting my instance on ${client.guilds.cache.size} servers`)
     client.user.setActivity(`type ${prefix}setup`, { type: 'WATCHING' })
 
-    // Double check to delete all old and empty rooms
+    // Double check and delete all old and empty rooms
     client.guilds.cache.forEach(g => {
         g.channels.cache.filter(c => c.type == "category" && c.name == "Among Us rooms").forEach(c => {
             c.guild.channels.cache.find(c => c.type == "category" && c.name == "Among Us rooms").children.forEach(c => {
@@ -107,8 +107,8 @@ client.on('message', async msg => {
 
     // DM help
     if(msg.channel.type == "dm" && msg.author.id != process.env.MY_ID) {
-        await msg.author.send("Hi! If you want to checkout how to set me up on your server, check out this [video](https://www.youtube.com/watch?v=y4IwTTkcpc8)")
-        await msg.author.send("If you need help, here it is:")
-        await msg.author.send(message.help(client))
+        msg.author.send("Hi! If you want to checkout how to set me up on your server, check out this [video](https://www.youtube.com/watch?v=y4IwTTkcpc8)")
+        msg.author.send("If you need help, here it is:")
+        msg.author.send(message.help(client))
     }
 })
