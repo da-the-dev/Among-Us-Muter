@@ -34,13 +34,21 @@ module.exports =
         // Connected
         if(exists(newChannel) && newChannel.parent == category) {
             // console.log('connected')
-
             var muterRole = newState.guild.roles.cache.find(r => r.name == 'AUM Muter Role')
             var unmutedTagRole = newState.guild.roles.cache.find(r => r.name == 'TAG: Unmuted')
-
             if(newChannel.members.size == 1) {
                 await newState.member.roles.add(muterRole)
                 await newState.member.roles.add(unmutedTagRole)
+            } else {
+                var mutedTagRole = newState.guild.roles.cache.find(r => r.name == 'TAG: Muted')
+                newChannel.members.forEach(m => {
+                    if(m.roles.cache.has(muterRole.id) && m.roles.cache.has(mutedTagRole.id)) {
+                        newState.setMute(true)
+                    }
+                    if(m.roles.cache.has(muterRole.id) && m.roles.cache.has(unmutedTagRole.id)) {
+                        newState.setMute(false)
+                    }
+                })
             }
         }
 
