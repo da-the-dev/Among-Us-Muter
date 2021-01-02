@@ -18,10 +18,13 @@ module.exports =
         /**@type {Discord.CategoryChannel} */
         var category = newState.guild.channels.cache.find(c => c.type == 'category' && c.name == 'Among Us rooms')
 
-        console.log('oldChannel', 'newChannel', 'oldChannel in category', 'newChannel in category')
-        console.log(exists(oldChannel), exists(newChannel), exists(oldChannel) && oldChannel.parent == category, exists(newChannel) && newChannel.parent == category)
-        console.log()
-        // console.log(oldState.mute, newState.mute)
+        // console.log({
+        //     'oldChannel': exists(oldChannel),
+        //     'newChannel': exists(newChannel),
+        //     'oldChannel in category': exists(oldChannel) && oldChannel.parent == category,
+        //     'newChannel in category': exists(newChannel) && newChannel.parent == category
+        // })
+        // console.log()
 
         // mute status change
         if(oldState.mute != newState.mute) {
@@ -29,7 +32,7 @@ module.exports =
             return
         }
         // Connected
-        if(exists(oldChannel) && exists(newChannel) && newChannel.parent == category) {
+        if(exists(newChannel) && newChannel.parent == category) {
             // console.log('connected')
 
             var muterRole = newState.guild.roles.cache.find(r => r.name == 'AUM Muter Role')
