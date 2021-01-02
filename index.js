@@ -23,23 +23,19 @@ client.login(process.env.BETAKEY)
 client.once('ready', () => {
     console.log("Im the Impostor, but Beta!")
     console.log(`Detecting my instance on ${client.guilds.cache.size} servers`)
-    client.user.setActivity('type `.setup`!', { type: 'WATCHING' })
+    client.user.setActivity(`type ${prefix}setup`, { type: 'WATCHING' })
 
     // Double check to delete all old and empty rooms
-    //!!!FIX!!! Unknown Channel error at delete
-    setInterval(() => {
-        client.guilds.cache.forEach(g => {
-            g.channels.cache.filter(c => c.type == "category" && c.name == "Among Us rooms").forEach(c => {
-                c.guild.channels.cache.find(c => c.type == "category" && c.name == "Among Us rooms").children.forEach(c => {
-                    if(c.members.size <= 0 && Date.now() - c.createdTimestamp > 30000)
-                        if(c) c.delete()
-                            .catch(e => console.log(e))
-                })
+    client.guilds.cache.forEach(g => {
+        g.channels.cache.filter(c => c.type == "category" && c.name == "Among Us rooms").forEach(c => {
+            c.guild.channels.cache.find(c => c.type == "category" && c.name == "Among Us rooms").children.forEach(c => {
+                if(c.members.size <= 0 && Date.now() - c.createdTimestamp > 30000)
+                    if(c) c.delete()
+                        .catch(e => console.log(e))
             })
-        }, 45000)
+        })
     })
 })
-
 client.on('guildCreate', async guild => {
     client.commands.find(a => a.name == "_guildcreate").foo(guild, client)
 })
