@@ -1,7 +1,8 @@
 const Discord = require('discord.js')
 
 module.exports = {
-    "help": (client) => {
+    /**@param client {Discord.Client} */
+    "help": client => {
         return new Discord.MessageEmbed()
             .setTitle('Help menu')
             .setDescription('All AUM commands for admins and others')
@@ -15,7 +16,8 @@ module.exports = {
             .setColor('#b50005')
             .setFooter('Among Us Muter by da-the-dev', client.user.avatarURL())
     },
-    "setup": (client) => {
+    /**@param client {Discord.Client} */
+    "setup": client => {
         return new Discord.MessageEmbed()
             .setTitle('Thanks for adding Among Us Muter to your server!')
             .setDescription(`Here's a step-by-step guide "How to set up Among Us Muter On Your Server"`)
