@@ -1,4 +1,6 @@
 const Discord = require('discord.js')
+// const channelDeletionTimeout = 30000
+const channelDeletionTimeout = 99999
 module.exports =
     /**
      * @param {Array<string>} args Command argument
@@ -23,15 +25,16 @@ module.exports =
         args.shift()
         var roomName = args.join(' ')
 
+        //!!!FIX!!! Unknown Channel error at delete
         // Create the room and delete it if empty for 30 seconds
         msg.guild.channels.create(roomName, { type: 'voice', userLimit: 10, parent: category })
-            .then(c => {
+            .then(channel => {
                 setTimeout(chan => {
-                    if(chan.members.size <= 0) {
-                        chan.delete()
-                        return
-                    }
-                }, 30000, c)
+                    if(chan.members.size <= 0)
+                        if(chan)
+                            chan.delete()
+                                .catch(e => console.log(e))
+                }, channelDeletionTimeout, channel)
             })
 
         msg.reply(`room \`${roomName}\` has been created!`)
