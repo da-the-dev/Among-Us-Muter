@@ -29,10 +29,11 @@ module.exports =
         // Create the room and delete it if empty for 30 seconds
         msg.guild.channels.create(roomName, { type: 'voice', userLimit: 10, parent: category })
             .then(channel => {
-                setInterval(chan => {
+                var interval = setInterval(chan => {
                     if(chan.members.size <= 0)
                         if(chan)
                             chan.delete()
+                                .then(() => clearInterval(interval))
                                 .catch(e => console.log(e))
                 }, channelDeletionTimeout, channel)
             })
