@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
-// const channelDeletionTimeout = 30000
-const channelDeletionTimeout = 99999
+const channelDeletionTimeout = 30000
+// const channelDeletionTimeout = 99999
 module.exports =
     /**
      * @param {Array<string>} args Command argument
