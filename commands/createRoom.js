@@ -1,5 +1,5 @@
 const Discord = require('discord.js')
-const channelDeletionTimeout = 2000
+const channelDeletionTimeout = 30000
 // const channelDeletionTimeout = 99999
 module.exports =
     /**
