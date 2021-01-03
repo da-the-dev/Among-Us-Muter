@@ -106,8 +106,8 @@ client.on('message', async msg => {
 
     // DM help
     if(msg.channel.type == "dm" && msg.author.id != process.env.MY_ID) {
-        msg.author.send("Hi! If you want to checkout how to set me up on your server, check out this [video](https://youtu.be/ekl6CdgKmD4)")
-        msg.author.send("If you need help, here it is:")
-        msg.author.send(messages.help(client))
+        await msg.author.send("Hi! If you want to checkout how to set me up on your server, check out this [video](https://youtu.be/ekl6CdgKmD4)")
+        await msg.author.send("If you need help, here it is:")
+        await msg.author.send(messages.help(client))
     }
 })
