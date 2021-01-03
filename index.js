@@ -1,7 +1,7 @@
 const dotenv = require('dotenv').config()
 const Discord = require('discord.js')
 const fs = require('fs')
-const message = require('./messages')
+const messages = require('./messages')
 const prefix = "."
 
 var client = new Discord.Client()
@@ -107,8 +107,8 @@ client.on('message', async msg => {
 
     // DM help
     if(msg.channel.type == "dm" && msg.author.id != process.env.MY_ID) {
-        msg.author.send("Hi! If you want to checkout how to set me up on your server, check out this [video](https://www.youtube.com/watch?v=y4IwTTkcpc8)")
+        msg.author.send("Hi! If you want to checkout how to set me up on your server, check out this [video](https://youtu.be/ekl6CdgKmD4)")
         msg.author.send("If you need help, here it is:")
-        msg.author.send(message.help(client))
+        msg.author.send(messages.help(client))
     }
 })
