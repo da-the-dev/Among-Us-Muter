@@ -6,7 +6,7 @@ module.exports =
     */
     // Register server and send setup instructions
     async (guild, client) => {
-        console.log('got added to a server')
+        // console.log('got added to a server')
 
         /**@type {Discord.TextChannel} */
         var channel = guild.channels.cache.find(c => c.type == "text" && (c.name == "general" || c.name == "main"))
@@ -25,8 +25,22 @@ module.exports =
         channel.send(messages.setup(client))
 
         // Set up lobby for rooms
-        if(!guild.channels.cache.find(c => c.type == 'category' && c.name == 'Among Us rooms'))
+        if(!guild.channels.cache.find(c => c.type == 'category' && c.name == 'Among Us rooms')) {
             guild.channels.create('Among Us rooms', { type: 'category' })
+            // .then(category => {
+            //     guild.channels.create('match-history', {
+            //         type: 'text',
+            //         parent: category,
+            //         permissionOverwrites:
+            //             [
+            //                 {
+            //                     'id': guild.id,
+            //                     'deny': 'SEND_MESSAGES'
+            //                 }
+            //             ]
+            //     })
+            // })
+        }
 
         // Create necessary roles
         guild.roles.create({
