@@ -25,7 +25,7 @@ client.once('ready', () => {
     console.log(`Detecting my instance on ${client.guilds.cache.size} servers`)
     client.user.setActivity(`type ${prefix}setup`, { type: 'WATCHING' })
 
-    // Double check to delete all old and empty rooms
+    // Double check and delete all old and empty rooms
     client.guilds.cache.forEach(g => {
         g.channels.cache.filter(c => c.type == "category" && c.name == "Among Us rooms").forEach(c => {
             c.guild.channels.cache.find(c => c.type == "category" && c.name == "Among Us rooms").children.forEach(c => {
@@ -106,20 +106,8 @@ client.on('message', async msg => {
 
     // DM help
     if(msg.channel.type == "dm" && msg.author.id != process.env.MY_ID) {
-        await msg.author.send("Hi! If you want to checkout how to set me up on your server, check out this [video](https://www.youtube.com/watch?v=y4IwTTkcpc8)")
-        await msg.author.send("If you need help, here it is:")
-        var help = new Discord.MessageEmbed()
-            .setTitle('Help menu')
-            .setDescription('All AUM commands for admins and others')
-            .addField(`**\`${client.prefix}setup\`**`, `If you need to refer to a step-by-step guide on how to setup the bot on your server, use this command.`)
-            .addField(`**\`${client.prefix}createRoom\`**`, `To create a room to play Among Us and use AUM, type \`${client.prefix}createRoom <name>\`, replacing \`<name>\` with your desired room name. The voicechannel with the same name will be created in "AMONG US ROOMS" shortly.`)
-            .addField(`**\`${client.prefix}amg\`**`, `Now, to mute the room, type \`${client.prefix}amg\` in any text channel. To un-mute the room, type \`${client.prefix}amg\` again. The lobby will be un-muted.`)
-            // .addField(`**${client.prefix}fix**`, `If user left Among Us channel when it was muted, type \`${client.prefix}fix @member\` in any text chat (Example: \`${client.prefix}fix @daym bro\`). This will give them un-mute them.`)
-            .addField(`**\`${client.prefix}delete\`**`, `If you want to remove AUM from your server, type this in any text channel to let it delete all util roles and categories. After that you can safely kick AUM out.`)
-            .addField("**GitHub**", "This bot was written by hand using Node.js and discord.js! Want to see how it works? Checkout my github repo [here](https://github.com/da-the-dev/Among-Us-Muter)")
-            .addField('**Patreon**', "Love this bot? Consider [donating a few dollans](https://www.patreon.com/da_dev) to help this project grow!")
-            .setColor('#b50005')
-            .setFooter('Among Us Muter by da-the-dev', client.user.avatarURL())
-        await msg.author.send(help)
+        msg.author.send("Hi! If you want to checkout how to set me up on your server, check out this [video](https://youtu.be/ekl6CdgKmD4)")
+        msg.author.send("If you need help, here it is:")
+        msg.author.send(messages.help(client))
     }
 })
