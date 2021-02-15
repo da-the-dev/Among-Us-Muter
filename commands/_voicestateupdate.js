@@ -50,6 +50,26 @@ module.exports =
                     }
                 })
             }
+
+            // Update room status message with current players
+            var roomName = newChannel.name
+            /**@type {Discord.TextChannel} */
+            var matchHistory = newChannel.guild.channels.cache.find(c => c.name == "match-history" && c.parentID == category.id)
+            /**@type {Discord.Message} */
+            var roomStatus = matchHistory.messages.cache.find(m => m.embeds[0].title.includes(roomName))
+            /**@type {Discord.MessageEmbed} */
+            var newRoomStatus = roomStatus.embeds[0]
+
+            if(roomStatus.description == 'No players in there as of yet') {
+                console.log(newState.member.user.username)
+
+                var user = newState.member.nickname
+                if(user == null) user = newState.member.user.username
+                newRoomStatus.setDescription(user)
+            }
+            console.log(roomStatus.id)
+            roomStatus.edit(newRoomStatus)
+                .then(() => console.log("edited"))
         }
 
         // Left/Disconnected

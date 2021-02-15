@@ -1,7 +1,7 @@
 const dotenv = require('dotenv').config()
 const Discord = require('discord.js')
 const fs = require('fs')
-const prefix = "$"
+const prefix = "."
 
 var client = new Discord.Client()
 
@@ -19,9 +19,9 @@ commandNames.forEach(c => {
     })
 })
 
-client.login(process.env.KEY)
+client.login(process.env.BETAKEY)
 client.once('ready', () => {
-    console.log("Im the Impostor!")
+    console.log("Im the Impostor, but BETA!")
     console.log(`Detecting my instance on ${client.guilds.cache.size} servers`)
     client.user.setActivity(`type ${prefix}setup`, { type: 'WATCHING' })
 
@@ -34,6 +34,23 @@ client.once('ready', () => {
                         .catch(e => console.log(e))
             })
         })
+
+        // Create "match-history"
+        /**@type {Discord.CategoryChannel} */
+        var category = g.channels.cache.find(c => c.type == "category" && c.name == "Among Us rooms")
+        var matchHistory = category.children.find(c => c.name == "match-history")
+        if(!matchHistory)
+            g.channels.create('match-history', {
+                type: 'text',
+                parent: category,
+                permissionOverwrites:
+                    [
+                        {
+                            'id': g.id,
+                            'deny': 'SEND_MESSAGES'
+                        }
+                    ]
+            })
     })
 })
 client.on('guildCreate', async guild => {
@@ -57,7 +74,12 @@ client.on('message', async msg => {
 
     // Development tools
     if(!msg.author.bot && msg.content == ".test" && msg.author.id == process.env.MY_ID) {
-        msg.reply(`<@&791016320149094431>`)
+        const Embed = new Discord.MessageEmbed()
+            .setDescription(":one:")
+        const newEmbed = new Discord.MessageEmbed()
+            .setDescription(":two:")
+        var Msg = await msg.channel.send(Embed); // sends message
+        Msg.edit(newEmbed) // edits message with newembed
     }
 
     // Update and hotfix notifications

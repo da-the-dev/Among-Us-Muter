@@ -21,7 +21,6 @@ module.exports =
                 })
             return
         }
-        console.log(category.children.forEach(c => console.log(c.name)))
         if(category.children.find(c => c.name == roomName)) {
             msg.reply('this lobby name already has been used. Try another.')
             return
@@ -32,8 +31,11 @@ module.exports =
 
         //!!!FIX!!! Unknown Channel error at delete
         // Create the room and delete it if empty for 30 seconds
+        /**@type {Discord.VoiceChannel} */
+        var room;
         msg.guild.channels.create(roomName, { type: 'voice', userLimit: 10, parent: category })
             .then(c => {
+                room = c
                 var interval = setInterval(chan => {
                     if(chan.members.size <= 0)
                         if(chan)
@@ -44,7 +46,14 @@ module.exports =
             })
 
         msg.reply(`room \`${roomName}\` has been created!`)
-            .then(m => {
+            .then(async m => {
+                var matchHistory = m.guild.channels.cache.find(c => c.name == "match-history" && c.parentID == category.id)
+                var inviteLink = await room.createInvite()
+                var newRoomMessage = new Discord.MessageEmbed()
+                    .setTitle(`New room \`${roomName}\` has been created!`)
+                    .setDescription('No players in there as of yet')
+                    .addField("Here's a join link:", inviteLink.url)
+                matchHistory.send(newRoomMessage)
                 m.delete({ timeout: 5000 })
             })
 

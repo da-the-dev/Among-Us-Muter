@@ -27,19 +27,19 @@ module.exports =
         // Set up lobby for rooms
         if(!guild.channels.cache.find(c => c.type == 'category' && c.name == 'Among Us rooms')) {
             guild.channels.create('Among Us rooms', { type: 'category' })
-            // .then(category => {
-            //     guild.channels.create('match-history', {
-            //         type: 'text',
-            //         parent: category,
-            //         permissionOverwrites:
-            //             [
-            //                 {
-            //                     'id': guild.id,
-            //                     'deny': 'SEND_MESSAGES'
-            //                 }
-            //             ]
-            //     })
-            // })
+                .then(category => {
+                    guild.channels.create('match-history', {
+                        type: 'text',
+                        parent: category,
+                        permissionOverwrites:
+                            [
+                                {
+                                    'id': guild.id,
+                                    'deny': 'SEND_MESSAGES'
+                                }
+                            ]
+                    })
+                })
         }
 
         // Create necessary roles
