@@ -1,4 +1,5 @@
 const Discord = require('discord.js')
+const messages = require('../messages')
 const exists = (v) => {
     if(v)
         return true

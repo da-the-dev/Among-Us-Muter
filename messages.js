@@ -30,5 +30,14 @@ module.exports = {
             .addField(`**Have questions?**`, `Type \`${client.prefix}help\` in any text chat to get a help message.`)
             .setColor('#b50005')
             .setFooter('Among Us Muter by da-the-dev', client.user.avatarURL())
+    },
+    /**@param {string} roomName */
+    /**@param {Discord.Invite} inviteLink */
+    "roomStatus": (roomName, inviteLink) => {
+        return new Discord.MessageEmbed()
+            .setTitle(`New room \`${roomName}\` has been created!`)
+            .setColor('#C40001')
+            .setDescription('No players in there as of yet')
+            .addField("Here's a join link:", inviteLink.url)
     }
 }

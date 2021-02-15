@@ -1,4 +1,5 @@
 const Discord = require('discord.js')
+const messages = require('../messages')
 const channelDeletionTimeout = 30000
 // const channelDeletionTimeout = 99999
 module.exports =
@@ -49,10 +50,7 @@ module.exports =
             .then(async m => {
                 var matchHistory = m.guild.channels.cache.find(c => c.name == "match-history" && c.parentID == category.id)
                 var inviteLink = await room.createInvite()
-                var newRoomMessage = new Discord.MessageEmbed()
-                    .setTitle(`New room \`${roomName}\` has been created!`)
-                    .setDescription('No players in there as of yet')
-                    .addField("Here's a join link:", inviteLink.url)
+                var newRoomMessage = messages.roomStatus(roomName, inviteLink)
                 matchHistory.send(newRoomMessage)
                 m.delete({ timeout: 5000 })
             })
