@@ -106,15 +106,6 @@ module.exports =
             var roomStatus = matchHistory.messages.cache.find(m => m.embeds[0].title.includes(roomName))
             var newRoomStatus = roomStatus.embeds[0]
 
-            /**@type {string} */
-            var description = roomStatus.embeds[0].description
-            var user = newState.member.nickname
-            if(user == null) user = newState.member.user.username
-
-            var indexOfUser = description.indexOf(user)
-            description = description.substr(0, indexOfUser) + description.substr(indexOfUser + user.length, description.length)
-            console.log("desc: " + description)
-
             if(oldChannel.members.size == 0) {
                 newRoomStatus.setDescription('No players in there as of yet')
             } else {
@@ -125,7 +116,6 @@ module.exports =
 
                 var indexOfUser = description.indexOf(user)
                 description = description.substr(0, indexOfUser) + description.substr(indexOfUser + user.length, description.length)
-
             }
             roomStatus.edit(newRoomStatus)
         }
