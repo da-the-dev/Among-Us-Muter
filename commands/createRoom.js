@@ -50,7 +50,7 @@ module.exports =
             .then(async m => {
                 var matchHistory = m.guild.channels.cache.find(c => c.name == "match-history" && c.parentID == category.id)
                 var inviteLink = await room.createInvite()
-                var newRoomMessage = messages.roomStatus(roomName, inviteLink)
+                var newRoomMessage = messages.roomStatus(client, roomName, inviteLink, room.id)
                 matchHistory.send(newRoomMessage)
                 m.delete({ timeout: 5000 })
             })

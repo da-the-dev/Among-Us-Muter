@@ -33,11 +33,14 @@ module.exports = {
     },
     /**@param {string} roomName */
     /**@param {Discord.Invite} inviteLink */
-    "roomStatus": (roomName, inviteLink) => {
+    /**@param {string} id */
+    "roomStatus": (client, roomName, inviteLink, id) => {
         return new Discord.MessageEmbed()
             .setTitle(`New room \`${roomName}\` has been created!`)
             .setColor('#C40001')
             .setDescription('No players in there as of yet')
             .addField("Here's a join link:", inviteLink.url)
+            .setColor('#b50005')
+            .setFooter(`Among Us Muter by da-the-dev, room ID: ${id}`, client.user.avatarURL())
     }
 }
