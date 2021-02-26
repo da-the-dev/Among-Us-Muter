@@ -57,7 +57,7 @@ client.on('message', async msg => {
 
     // Development tools
     if(!msg.author.bot && msg.content == ".test" && msg.author.id == process.env.MY_ID) {
-        msg.reply(`<@&791016320149094431>`)
+        msg.reply(client.ws.ping)
     }
 
     // Update and hotfix notifications
