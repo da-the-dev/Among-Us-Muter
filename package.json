@@ -25,12 +25,24 @@
   },
   "homepage": "https://github.com/da-the-dev/Among-Us-Muter#readme",
   "dependencies": {
+    "@discordjs/rest": "^0.1.0-canary.0",
+    "discord-api-types": "^0.24.0",
     "discord.js": "^13.3.1",
-    "dotenv": "^10.0.0"
+    "dotenv": "^10.0.0",
+    "g": "^2.0.1"
   },
   "devDependencies": {
+    "@types/dotenv": "^8.2.0",
     "@types/node": "^16.11.6",
+    "@typescript-eslint/eslint-plugin": "^5.3.0",
+    "@typescript-eslint/parser": "^5.3.0",
+    "eslint": "^7.32.0",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.1.1",
     "jest": "^27.3.1",
+    "nodemon": "^2.0.14",
     "typescript": "^4.4.4"
   }
 }
