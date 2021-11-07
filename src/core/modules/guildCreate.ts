@@ -1,8 +1,8 @@
-import { Guild, Permissions } from "discord.js"
+import { Guild, Permissions } from 'discord.js'
 
 export default async (guild: Guild) => {
     // Channel creation
-    const cat = await guild.channels.create('Among Us lobbies', {
+    const cat = await guild.channels.create('Among Us Lobbies', {
         type: 'GUILD_CATEGORY',
         position: 100
     })

@@ -26,14 +26,11 @@
         "space-before-function-paren": "off",
         "no-unused-vars": "warn",
         "quotes": [
-            [
-                "error",
-                "single",
-                {
-                    "avoidEscape": true,
-                    "allowTemplateLiterals": true
-                }
-            ]
+            "error",
+            "single",
+            {
+                "avoidEscape": true
+            }
         ]
     }
 }

@@ -20,6 +20,7 @@ const rest = new REST({ version: '9' }).setToken(process.env.TOKEN!);
         // await rest.put(
         //     Routes.applicationCommands(process.env.CLIENTID!),
         //     { body: [] }
+        //     { body: loaderCommands.filter(c => c.name != 'test) }
         // )
         await rest.put(
             Routes.applicationGuildCommands(process.env.CLIENTID!, '620690898015223848'),

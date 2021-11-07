@@ -16,19 +16,18 @@ export default {
 
         if (!member.voice.mute) {
             await i.reply({
-                'content': 'Game started! Mutinng lobby...',
-                'ephemeral': true
+                content: 'Game started! Mutinng lobby...',
+                ephemeral: true
             })
             await Promise.all(
                 vc?.members.map(m => {
                     return m.voice.setMute(true)
                 })!
             )
-        }
-        else {
+        } else {
             await i.reply({
-                'content': 'Vote started! Unmuting lobby...',
-                'ephemeral': true
+                content: 'Vote started! Unmuting lobby...',
+                ephemeral: true
             })
             await Promise.all(
                 vc?.members.map(m => {

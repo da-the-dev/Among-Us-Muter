@@ -1,5 +1,5 @@
-import { VoiceState } from "discord.js"
-import { amCategory, amGenerator } from "./find"
+import { VoiceState } from 'discord.js'
+import { amCategory, amGenerator } from './find'
 
 export default async (oldState: VoiceState, newState: VoiceState) => {
     const { guild, member } = oldState
@@ -14,8 +14,7 @@ export default async (oldState: VoiceState, newState: VoiceState) => {
     const generator = amGenerator(guild)
 
     // Voice state update (mute, unmute, etc)
-    if (oldState.channelId === newState.channelId)
-        return
+    if (oldState.channelId === newState.channelId) { return }
     // New lobby request
     if (newState.channel?.parentId === category?.id && newState.channel?.id === generator?.id) {
         guild.channels.create(member?.displayName || 'Unknown room', {
@@ -25,20 +24,19 @@ export default async (oldState: VoiceState, newState: VoiceState) => {
             userLimit: 10,
             permissionOverwrites: [
                 { id: member!.id, allow: 'CREATE_INSTANT_INVITE' },
-                { id: guild!.id, deny: 'CREATE_INSTANT_INVITE' },
+                { id: guild!.id, deny: 'CREATE_INSTANT_INVITE' }
                 // { id: muteRoleId(guild), deny: 'SPEAK' }
             ]
-        }).then(vc => member?.voice.setChannel(vc))
+        }).then(vc => { if (member?.voice) member?.voice.setChannel(vc) })
     }
     // Lobby is empty
     if (oldState.channel?.parentId === category?.id &&
-        (!newState.channel || newState.channel?.parentId != category?.id) &&
+        (!newState.channel || newState.channel?.parentId !== category?.id) &&
         oldState.channel?.members.size <= 0
-    )
-        oldState.channel?.delete()
+    ) { oldState.channel?.delete() }
     // Reassign lobby master if they leave
     if (oldState.channel?.parentId === category?.id &&
-        (!newState.channel || newState.channel?.parentId != category?.id) &&
+        (!newState.channel || newState.channel?.parentId !== category?.id) &&
         oldState.channel?.permissionsFor(oldState.member!, true).has('CREATE_INSTANT_INVITE') &&
         oldState.channel?.members.size > 0
     ) {
@@ -50,9 +48,11 @@ export default async (oldState: VoiceState, newState: VoiceState) => {
     }
     // If user left lobby
     if (oldState.channel?.parentId === category?.id &&
-        oldState.channel?.members.find(m => m.permissionsIn(oldState.channel!).has('CREATE_INSTANT_INVITE'))?.voice.serverMute)
-        member?.voice.setMute(false).catch(err => console.log('User server unmute error'))
+        oldState.channel?.members.find(m => m.permissionsIn(oldState.channel!).has('CREATE_INSTANT_INVITE'))?.voice.serverMute) {
+        if (member?.voice) member?.voice.setMute(false).catch(err => console.log('User server unmute error', err))
+    }
     if (newState.channel?.parentId === category?.id &&
-        newState.channel?.members.find(m => m.permissionsIn(newState.channel!).has('CREATE_INSTANT_INVITE'))?.voice.serverMute)
-        member?.voice.setMute(true).catch(err => console.log('User server mute error'))
+        newState.channel?.members.find(m => m.permissionsIn(newState.channel!).has('CREATE_INSTANT_INVITE'))?.voice.serverMute) {
+        if (member?.voice) member?.voice.setMute(true).catch(err => console.log('User server mute error', err))
+    }
 }
