@@ -1,0 +1,15 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "npm",
+			"script": "dev",
+			"problemMatcher": [
+				"$eslint-compact",
+				"$tsc-watch"
+			],
+			"label": "Run dev mode",
+			"detail": "nodemon dist/index.js -d 1"
+		}
+	]
+}
