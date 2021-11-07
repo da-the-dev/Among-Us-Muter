@@ -43,7 +43,7 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
         oldState.channel.members.size <= 0
     )
         oldState.channel.delete()
-    // Reasign lobby master if they leave
+    // Reassign lobby master if they leave
     if (oldState.channel?.parentId === amCategory.id &&
         (!newState.channel || newState.channel.parentId != amCategory.id) &&
         oldState.channel.permissionsFor(oldState.member!, true).has('CREATE_INSTANT_INVITE') &&
