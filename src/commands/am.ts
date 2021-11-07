@@ -3,7 +3,7 @@ import { amCategory } from '../core/modules/find'
 
 export default {
     name: 'am',
-    description: 'Toggle mute states',
+    description: 'Mute or unmute a lobby',
     exec: async i => {
         const guild = i.guild!
         const member = guild.members.cache.find(m => m.id === i.member.user.id)

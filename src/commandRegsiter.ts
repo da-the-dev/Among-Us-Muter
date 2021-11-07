@@ -9,6 +9,8 @@ const loaderCommands = commands.map(c =>
     new SlashCommandBuilder().setName(c.name).setDescription(c.description || 'No description')
 )
 
+// console.log(loaderCommands.map(c => c.name))
+
 const rest = new REST({ version: '9' }).setToken(process.env.TOKEN!);
 
 (async () => {
@@ -17,7 +19,7 @@ const rest = new REST({ version: '9' }).setToken(process.env.TOKEN!);
 
         // await rest.put(
         //     Routes.applicationCommands(process.env.CLIENTID!),
-        //     { body: commands }
+        //     { body: [] }
         // )
         await rest.put(
             Routes.applicationGuildCommands(process.env.CLIENTID!, '620690898015223848'),

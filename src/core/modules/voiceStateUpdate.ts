@@ -54,5 +54,5 @@ export default async (oldState: VoiceState, newState: VoiceState) => {
         member?.voice.setMute(false).catch(err => console.log('User server unmute error'))
     if (newState.channel?.parentId === category?.id &&
         newState.channel?.members.find(m => m.permissionsIn(newState.channel!).has('CREATE_INSTANT_INVITE'))?.voice.serverMute)
-        member?.voice.setMute(true)
+        member?.voice.setMute(true).catch(err => console.log('User server mute error'))
 }
