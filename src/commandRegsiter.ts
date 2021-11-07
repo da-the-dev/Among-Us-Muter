@@ -1,12 +1,13 @@
 import { Routes } from 'discord-api-types/v9'
 import { REST } from '@discordjs/rest'
 import { SlashCommandBuilder } from '@discordjs/builders'
-import * as dotenv from 'dotenv'; dotenv.config()
+import * as dotenv from 'dotenv'
+import commands from './core/modules/commandLoader'
+dotenv.config()
 
-const commands = [
-    new SlashCommandBuilder().setName('ping').setDescription('Replies with pong!'),
-    new SlashCommandBuilder().setName('guildcreate').setDescription('Just a test')
-]
+const loaderCommands = commands.map(c =>
+    new SlashCommandBuilder().setName(c.name).setDescription(c.description || 'No description')
+)
 
 const rest = new REST({ version: '9' }).setToken(process.env.TOKEN!);
 
@@ -20,7 +21,7 @@ const rest = new REST({ version: '9' }).setToken(process.env.TOKEN!);
         // )
         await rest.put(
             Routes.applicationGuildCommands(process.env.CLIENTID!, '620690898015223848'),
-            { body: commands }
+            { body: loaderCommands }
         )
 
         console.log('Successfully reloaded application (/) commands.')
