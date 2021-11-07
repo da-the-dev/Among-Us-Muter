@@ -12,9 +12,9 @@ export default async (guild: Guild) => {
     })
     await lbg.setUserLimit(1, 'Restrict user access for better lobby managment')
 
-    // Role creation
-    await guild.roles.create({
-        name: 'AMG Muted',
-        permissions: new Permissions().remove('SPEAK')
-    })
+    // // Role creation (not needed)
+    // await guild.roles.create({
+    //     name: 'AMG Muted',
+    //     permissions: new Permissions().remove('SPEAK')
+    // })
 }
