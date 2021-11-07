@@ -27,7 +27,7 @@ export default async (oldState: VoiceState, newState: VoiceState) => {
                 { id: guild!.id, deny: 'CREATE_INSTANT_INVITE' }
                 // { id: muteRoleId(guild), deny: 'SPEAK' }
             ]
-        }).then(vc => { if (member?.voice) member?.voice.setChannel(vc) })
+        }).then(vc => { if (member?.voice.channel) member?.voice.setChannel(vc) })
     }
     // Lobby is empty
     if (oldState.channel?.parentId === category?.id &&
@@ -49,10 +49,12 @@ export default async (oldState: VoiceState, newState: VoiceState) => {
     // If user left lobby
     if (oldState.channel?.parentId === category?.id &&
         oldState.channel?.members.find(m => m.permissionsIn(oldState.channel!).has('CREATE_INSTANT_INVITE'))?.voice.serverMute) {
-        if (member?.voice) member?.voice.setMute(false).catch(err => console.log('User server unmute error', err))
+        console.log(member?.voice.channel)
+        if (member?.voice.channel) member?.voice.setMute(false).catch(err => console.log('User server unmute error', err))
     }
     if (newState.channel?.parentId === category?.id &&
         newState.channel?.members.find(m => m.permissionsIn(newState.channel!).has('CREATE_INSTANT_INVITE'))?.voice.serverMute) {
-        if (member?.voice) member?.voice.setMute(true).catch(err => console.log('User server mute error', err))
+        console.log(member?.voice.channel)
+        if (member?.voice.channel) member?.voice.setMute(true).catch(err => console.log('User server mute error', err))
     }
 }
