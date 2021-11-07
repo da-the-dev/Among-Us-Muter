@@ -9,7 +9,8 @@
     "dev": "nodemon dist/index.js -d 1",
     "build": "tsc",
     "watch": "tsc -w",
-    "rebuild": "rm /dist -rf && echo Deleted 'dist', rebuilding... && npm run build && echo Rebuilding complete"
+    "rebuild": "rm /dist -rf && echo Deleted 'dist', rebuilding... && npm run build && echo Rebuilding complete",
+    "postinstall": "npm run build"
   },
   "repository": {
     "type": "git",
