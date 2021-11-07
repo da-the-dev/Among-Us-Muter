@@ -1,5 +1,5 @@
 import BaseCommand from '../core/interfaces/BaseCommand'
-import { amCategory, muteRoleId } from '../core/modules/find'
+import { amCategory } from '../core/modules/find'
 
 export default {
     name: 'am',
