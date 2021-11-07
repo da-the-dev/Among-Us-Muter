@@ -1,6 +1,7 @@
 import { CategoryChannel, Client, Guild, Intents, Permissions, VoiceChannel, VoiceState } from 'discord.js'
 import * as dotenv from 'dotenv'
 import commands from './core/modules/commandLoader'
+import { amCategory, amGenerator, muteRoleId } from './core/modules/find'
 import { install } from 'source-map-support'
 install()
 dotenv.config()
@@ -16,46 +17,61 @@ client.on('guildCreate', async guild => {
     await testGuildCreate(guild)
 })
 client.on('voiceStateUpdate', async (oldState, newState) => {
-    const { guild, member } = newState
+    const { guild, member } = oldState
     await guild.channels.fetch()
-    const amCategory = guild.channels.cache.find(c => c.name.toLowerCase() === 'among us lobbies') as CategoryChannel
-    const amGenerator = guild.channels.cache.find(c => c.name.toLowerCase() === 'lobby generator' && c.parentId === amCategory.id) as VoiceChannel
+
+    const category = amCategory(guild)
+    // try {
+    //     console.log('vsu categoty', category.id)
+    // } catch (e) {
+    //     console.log(category)
+    // }
+    const generator = amGenerator(guild)
 
     // Voice state update (mute, unmute, etc)
     if (oldState.channelId === newState.channelId)
         return
     // New lobby request
-    if (newState.channel?.parentId === amCategory.id && newState.channel.id === amGenerator.id) {
+    if (newState.channel?.parentId === category?.id && newState.channel?.id === generator?.id) {
         guild.channels.create(member?.displayName || 'Unknown room', {
-            parent: amCategory,
+            parent: category,
             type: 'GUILD_VOICE',
             position: 100,
             userLimit: 10,
             permissionOverwrites: [
                 { id: member!.id, allow: 'CREATE_INSTANT_INVITE' },
-                { id: guild!.id, deny: 'CREATE_INSTANT_INVITE' }
+                { id: guild!.id, deny: 'CREATE_INSTANT_INVITE' },
+                { id: muteRoleId(guild), deny: 'SPEAK' }
             ]
         }).then(vc => member?.voice.setChannel(vc))
     }
     // Lobby is empty
-    if (oldState.channel?.parentId === amCategory.id &&
-        (!newState.channel || newState.channel.parentId != amCategory.id) &&
-        oldState.channel.members.size <= 0
+    if (oldState.channel?.parentId === category?.id &&
+        (!newState.channel || newState.channel?.parentId != category?.id) &&
+        oldState.channel?.members.size <= 0
     )
-        oldState.channel.delete()
+        oldState.channel?.delete()
     // Reassign lobby master if they leave
-    if (oldState.channel?.parentId === amCategory.id &&
-        (!newState.channel || newState.channel.parentId != amCategory.id) &&
-        oldState.channel.permissionsFor(oldState.member!, true).has('CREATE_INSTANT_INVITE') &&
-        oldState.channel.members.size > 0
+    if (oldState.channel?.parentId === category?.id &&
+        (!newState.channel || newState.channel?.parentId != category?.id) &&
+        oldState.channel?.permissionsFor(oldState.member!, true).has('CREATE_INSTANT_INVITE') &&
+        oldState.channel?.members.size > 0
     ) {
         const vc = oldState.channel
-        const newMaster = vc.members.random()
+        const newMaster = vc?.members.random()
         const oldMaster = oldState.member
-        await vc.permissionOverwrites.delete(oldMaster!)
-        await vc.permissionOverwrites.create(newMaster!, { CREATE_INSTANT_INVITE: true })
+        await vc?.permissionOverwrites.delete(oldMaster!)
+        await vc?.permissionOverwrites.create(newMaster!, { CREATE_INSTANT_INVITE: true })
     }
-
+    // If user left lobby
+    if (oldState.channel?.parentId === category?.id
+    ) {
+        // 
+        if (oldState.channel?.members.find(m => m.permissionsIn(oldState.channel!).has('CREATE_INSTANT_INVITE'))?.voice.serverMute)
+            member?.voice.setMute(false)
+        else
+            member?.voice.setMute(true)
+    }
 })
 
 client.on('interactionCreate', async i => {
