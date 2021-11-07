@@ -16,15 +16,15 @@ const rest = new REST({ version: '9' }).setToken(process.env.TOKEN!);
 (async () => {
     try {
         console.log('Started refreshing application (/) commands.')
-
+        // loaderCommands.filter(c => c.name !== 'test')
         // await rest.put(
         //     Routes.applicationCommands(process.env.CLIENTID!),
-        //     { body: [] }
-        //     { body: loaderCommands.filter(c => c.name != 'test) }
+        //     // { body: []}
+        //     { body: loaderCommands.filter(c => c.name !== 'test') }
         // )
         await rest.put(
             Routes.applicationGuildCommands(process.env.CLIENTID!, '620690898015223848'),
-            { body: loaderCommands }
+            { body: [] }
         )
 
         console.log('Successfully reloaded application (/) commands.')
