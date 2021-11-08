@@ -5,6 +5,8 @@ import * as dotenv from 'dotenv'
 import commands from './core/modules/commandLoader'
 dotenv.config()
 
+const blacklist = ['test', 'guilddata']
+
 const loaderCommands = commands.map(c =>
     new SlashCommandBuilder().setName(c.name).setDescription(c.description || 'No description')
 )
@@ -20,7 +22,7 @@ const rest = new REST({ version: '9' }).setToken(process.argv.slice(2)[0] === '-
             await rest.put(
                 Routes.applicationCommands(process.env.CLIENTID!),
                 // { body: []}
-                { body: loaderCommands.filter(c => c.name !== 'test') }
+                { body: loaderCommands.filter(c => !blacklist.includes(c.name)) }
             )
         }
 
