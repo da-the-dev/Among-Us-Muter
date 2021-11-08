@@ -11,20 +11,22 @@ const loaderCommands = commands.map(c =>
 
 // console.log(loaderCommands.map(c => c.name))
 
-const rest = new REST({ version: '9' }).setToken(process.env.TOKEN!);
+const rest = new REST({ version: '9' }).setToken(process.argv.slice(2)[0] === '--prod' ? process.env.TOKEN! : process.env.BETATOKEN!);
 
 (async () => {
     try {
         console.log('Started refreshing application (/) commands.')
-        // loaderCommands.filter(c => c.name !== 'test')
-        // await rest.put(
-        //     Routes.applicationCommands(process.env.CLIENTID!),
-        //     // { body: []}
-        //     { body: loaderCommands.filter(c => c.name !== 'test') }
-        // )
+        if (process.argv.slice(2).includes('--global')) {
+            await rest.put(
+                Routes.applicationCommands(process.env.CLIENTID!),
+                // { body: []}
+                { body: loaderCommands.filter(c => c.name !== 'test') }
+            )
+        }
+
         await rest.put(
-            Routes.applicationGuildCommands(process.env.CLIENTID!, '620690898015223848'),
-            { body: [] }
+            Routes.applicationGuildCommands(process.argv.slice(2).includes('--prod') ? process.env.CLIENTID! : process.env.BETACLIENTID!, '620690898015223848'),
+            { body: loaderCommands }
         )
 
         console.log('Successfully reloaded application (/) commands.')

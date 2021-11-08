@@ -27,4 +27,4 @@ client.on('interactionCreate', async i => {
     }
 })
 
-client.login(process.env.TOKEN!)
+client.login(process.argv.slice(2)[0] === '--prod' ? process.env.TOKEN! : process.env.BETATOKEN!)
