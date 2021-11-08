@@ -5,11 +5,13 @@ export default async (guild: Guild) => {
     const cat = await guild.channels.create('Among Us Lobbies', {
         type: 'GUILD_CATEGORY',
         position: 100
-    })
+    }).catch(err => console.log(err))
+    if (!cat) return
     const lbg = await guild.channels.create('Lobby generator', {
         type: 'GUILD_VOICE',
         parent: cat
-    })
+    }).catch(err => console.log(err))
+    if (!lbg) return
     await lbg.setUserLimit(1, 'Restrict user access for better lobby managment')
 
     const welcome = new MessageEmbed({
