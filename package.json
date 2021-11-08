@@ -7,6 +7,7 @@
     "start": "node dist\\index.js",
     "register": "node dist\\commandRegsiter.js",
     "dev": "nodemon dist/index.js -d 1",
+    "deploy": "git push heroku master",
     "build": "tsc",
     "watch": "tsc -w",
     "rebuild": "rm /dist -rf && echo Deleted 'dist', rebuilding... && npm run build && echo Rebuilding complete",
