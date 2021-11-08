@@ -27,7 +27,7 @@ export default async (oldState: VoiceState, newState: VoiceState) => {
                 { id: guild!.id, deny: 'CREATE_INSTANT_INVITE' }
                 // { id: muteRoleId(guild), deny: 'SPEAK' }
             ]
-        }).then(vc => { if (member?.voice.channel) member?.voice.setChannel(vc) })
+        }).then(vc => { if (member?.voice.channel) member?.voice.setChannel(vc).catch(err => console.log(err)) })
     }
     // Lobby is empty
     if (oldState.channel?.parentId === category?.id &&
@@ -43,8 +43,8 @@ export default async (oldState: VoiceState, newState: VoiceState) => {
         const vc = oldState.channel
         const newMaster = vc?.members.random()
         const oldMaster = oldState.member
-        await vc?.permissionOverwrites.delete(oldMaster!)
-        await vc?.permissionOverwrites.create(newMaster!, { CREATE_INSTANT_INVITE: true })
+        await vc?.permissionOverwrites.delete(oldMaster!).catch(err => console.log(err))
+        await vc?.permissionOverwrites.create(newMaster!, { CREATE_INSTANT_INVITE: true }).catch(err => console.log(err))
     }
     // If user left lobby
     if (oldState.channel?.parentId === category?.id &&

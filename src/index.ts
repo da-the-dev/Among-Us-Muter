@@ -1,4 +1,4 @@
-import { Client, Guild, Intents, Permissions } from 'discord.js'
+import { Client, Intents } from 'discord.js'
 import * as dotenv from 'dotenv'
 import commands from './core/modules/commandLoader'
 import { install } from 'source-map-support'
@@ -12,7 +12,6 @@ const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_
 client.on('ready', () => {
     console.log(`Logged in as ${client.user?.tag}!`)
 })
-
 
 client.on('guildCreate', async guild => { guildCreate(guild) })
 client.on('voiceStateUpdate', (oldState, newState) => voiceStateUpdate(oldState, newState))
