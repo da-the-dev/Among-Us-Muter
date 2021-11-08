@@ -28,11 +28,11 @@ export default async (oldState: VoiceState, newState: VoiceState) => {
             ]
         }).then(vc => {
             member?.voice.setChannel(vc).catch(async err => {
-                console.log('An error in voiceStateUpdate. New lobby request (user joins). Can\'t move a member\n', err)
+                console.log('An error in voiceStateUpdate. New lobby request (user joins). Can\'t move a member.')
                 await sendMessage(guild, error)
             })
         }).catch(async err => {
-            console.log('An error in voiceStateUpdate. New lobby request (user joins). Can\'t create a lobby.\n', err)
+            console.log('An error in voiceStateUpdate. New lobby request (user joins). Can\'t create a lobby.')
             await sendMessage(guild, error2)
         })
     }
@@ -42,7 +42,7 @@ export default async (oldState: VoiceState, newState: VoiceState) => {
         oldState.channel?.members.size <= 0
     ) {
         oldState.channel?.delete().catch(async err => {
-            console.log('An error in voiceState update. Lobby empty and missing permissons', err)
+            console.log('An error in voiceState update. Lobby empty and missing permissons.')
             await sendMessage(guild, error)
         })
     }
@@ -56,7 +56,7 @@ export default async (oldState: VoiceState, newState: VoiceState) => {
         const newMaster = vc?.members.random()
         const oldMaster = oldState.member
         await vc?.permissionOverwrites.delete(oldMaster!).catch(async err => {
-            console.log('An error in voiceState update. Lobby master left and missing permissons', err)
+            console.log('An error in voiceState update. Lobby master left and missing permissons.')
             await sendMessage(guild, error)
         })
         await vc?.permissionOverwrites.create(newMaster!, { CREATE_INSTANT_INVITE: true }).catch(err => console.log(err))
@@ -73,6 +73,6 @@ export default async (oldState: VoiceState, newState: VoiceState) => {
     if (newState.channel?.parentId === category?.id &&
         newState.channel?.members.find(m => m.permissionsIn(newState.channel!).has('CREATE_INSTANT_INVITE'))?.voice.serverMute) {
         member?.voice.setMute(true)
-            .catch(err => console.log('An error in voiceStateUpdate. User server mute error\n', err))
+            .catch(err => console.log('An error in voiceStateUpdate. User server mute error.'))
     }
 }
