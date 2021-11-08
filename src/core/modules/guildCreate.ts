@@ -29,14 +29,14 @@ export default async (guild: Guild) => {
             if (tc?.isText()) tc.send({ embeds: [welcome] })
         }
     } catch (err) {
-        console.log('Missing permissons', err)
+        console.log('Missing permissons: ', guild.name)
         await guild.channels.fetch()
         const avalibleTextChannels = guild.channels.cache.filter(c => c.type === 'GUILD_TEXT')
         const general = avalibleTextChannels.find(c => c.name === 'general' || c.name === 'main')
-        if (general && general.isText()) general.send('Please re-add the bot')
+        if (general && general.isText()) general.send('Cannot create channels. Please re-add the bot with a correct link and tick all boxes')
         if (!general) {
             const tc = avalibleTextChannels.random()
-            if (tc?.isText()) tc.send('Please re-add the bot')
+            if (tc?.isText()) tc.send('Cannot create channels. Please re-add the bot with a correct link and tick all boxes')
         }
     }
     // // Role creation (not needed)
