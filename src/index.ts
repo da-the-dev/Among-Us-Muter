@@ -19,7 +19,11 @@ client.on('voiceStateUpdate', (oldState, newState) => voiceStateUpdate(oldState,
 client.on('interactionCreate', async i => {
     if (!i.isCommand()) return
     for (const c of commands) {
-        if (c.name === i.commandName) { c.exec(i, client) }
+        try {
+            if (c.name === i.commandName) { c.exec(i, client) }
+        } catch (err) {
+            console.log(err)
+        }
     }
 })
 
