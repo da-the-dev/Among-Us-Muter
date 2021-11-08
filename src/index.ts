@@ -22,7 +22,7 @@ client.on('interactionCreate', async i => {
         try {
             if (c.name === i.commandName) { c.exec(i, client) }
         } catch (err) {
-            console.log(err)
+            console.log('handled err: ', err)
         }
     }
 })
