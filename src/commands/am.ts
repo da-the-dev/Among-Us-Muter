@@ -8,8 +8,11 @@ export default {
         const guild = i.guild!
         const member = guild.members.cache.find(m => m.id === i.member.user.id)
         const vc = member?.voice.channel
+
+        const category = amCategory(guild)?.id
+        if (!category) return
         // If not connected to a lobby or not a host, ignore
-        if (!vc || vc.parentId !== amCategory(guild).id || !vc.permissionsFor(member).has('CREATE_INSTANT_INVITE')) {
+        if (!vc || vc.parentId !== category || !vc.permissionsFor(member).has('CREATE_INSTANT_INVITE')) {
             await i.reply({ content: 'You are not in a Among Us lobby or not a lobby host! Create a lobby to use this command!', ephemeral: true })
             return
         }

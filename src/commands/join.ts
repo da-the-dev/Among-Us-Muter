@@ -20,6 +20,7 @@ export default {
         const lobby = (category.children.filter(c => c.isVoice() && c.name !== 'Lobby generator') as Collection<string, VoiceChannel>).random()
         if (lobby) {
             await member?.voice.setChannel(lobby)
+                .catch(e => e)
             i.reply({ content: 'Lobby found! Moving...', ephemeral: true })
         } else {
             i.reply({ content: 'Couldn\'t find a lobby!', ephemeral: true })
