@@ -10,7 +10,7 @@ export default async (guild: Guild, message: MessageEmbed | string) => {
     const general = avalibleTextChannels.find(c => c.name === 'general' || c.name === 'main')
     if (general && general.isText()) typeof message === 'string' ? await general.send({ content: message }).catch(e => err()) : await general.send({ embeds: [message] }).catch(e => err())
     if (!general) {
-        const tc = avalibleTextChannels.random()
+        const tc = avalibleTextChannels.first()
         if (tc?.isText()) typeof message === 'string' ? await tc.send({ content: message }).catch(e => err()) : await tc.send({ embeds: [message] }).catch(e => err())
     }
 }
