@@ -12,6 +12,7 @@ export default async (oldState: VoiceState, newState: VoiceState) => {
     const category = amCategory(guild)
     const generator = amGenerator(guild)
 
+    if (!category || !generator) return
     // Voice state update (mute, unmute, etc)
     if (oldState.channelId === newState.channelId) { return }
     // New lobby request
