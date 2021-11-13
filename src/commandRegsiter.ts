@@ -5,7 +5,7 @@ import * as dotenv from 'dotenv'
 import commands from './core/modules/commandLoader'
 dotenv.config()
 
-const blacklist = ['test', 'guilddata', 'bug']
+const blacklist = ['test', 'bug']
 
 const loaderCommands = commands.map(c =>
     new SlashCommandBuilder().setName(c.name).setDescription(c.description || 'No description')
