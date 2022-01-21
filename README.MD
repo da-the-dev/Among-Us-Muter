@@ -16,7 +16,7 @@ This is a Discord bot that solves the voicechannel spam problem when playing Amo
 
 
 ### Contributing
-This project is open-source, so if you have any suggestions or bugs to report, feel free to open a new issue at GitHub. I'll try my best to respond ASAP. Also you can open pull requests if you want to propose changes. You can use my code if it complies with [GPLv3 license](LICENSE).
+This project is open-source, so if you have any suggestions or bugs to report, feel free to open a new issue at GitHub. I'll try my best to respond ASAP. Also you can open pull requests if you want to propose changes. You can use my code if it complies with [the license](LICENSE).
    
 
 ## TL:DR
